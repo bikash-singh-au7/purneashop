@@ -1,0 +1,187 @@
+<nav id="sidebar">
+            <div class="sidebar-header">
+                <img class="img img-fluid" src="/images/logo/logo.png">
+            </div>
+
+            <ul class="list-unstyled components">
+                <!--Dashboad Setup-->
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-home" id="fa"></i> Dashboard</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="/admin/home">Dashboard</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <!--Session Setup-->
+                <li>
+                    <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-calendar" id="fa"></i> Category</a>
+                    <ul class="collapse list-unstyled" id="categorySubmenu">
+                        <li> <a href="/admin/category"><i class="fa fa-cog"
+                                    id="fa"></i>Manage Category</a> </li>
+                    </ul>
+                </li>
+
+
+                <!--Product Setup-->
+                <li>
+                    <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-list" id="fa"></i> Product</a>
+                    <ul class="collapse list-unstyled" id="productSubmenu">
+                        <li> <a href="/admin/products"><i class="fa fa-cog" id="fa"></i> Manage Product</a> </li>
+                    </ul>
+                </li>
+
+
+                <!--Users Setup-->
+                <li>
+                    <a href="#usersSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-user" id="fa"></i> Users</a>
+                    <ul class="collapse list-unstyled" id="usersSubmenu">
+                        <li> <a href="/admin/users"><i class="fa fa-cog" id="fa"></i> Manage Users</a> </li>
+                    </ul>
+                </li>
+
+                <!--Order Setup-->
+                <li>
+                    <a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-user" id="fa"></i> Orders</a>
+                    <ul class="collapse list-unstyled" id="orderSubmenu">
+                        <li> <a href="/admin/pendingOrders"><i class="fa fa-cog" id="fa"></i> Pending Orders</a> </li>
+                        <li> <a href="/admin/unshippedOrders"><i class="fa fa-cog" id="fa"></i> Unshipped Orders</a> </li>
+                        <li> <a href="/admin/shippedOrders"><i class="fa fa-cog" id="fa"></i> Shipped Orders</a> </li>
+                    </ul>
+                </li>
+
+
+
+
+                <!--Batch Setup-->
+                {{!-- <li>
+                    <a href="#batchSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-users" id="fa"></i>Batches</a>
+                    <ul class="collapse list-unstyled" id="batchSubmenu">
+                        <li> <a href="https://vijayphysics.com/BatchSetup/batch/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Batches</a></li>
+                        <li> <a href="https://vijayphysics.com/BatchSetup/batch/manage"><i class="fa fa-cog"
+                                    id="fa"></i>Manage Batches</a> </li>
+                    </ul>
+                </li>
+
+                <!--Chapter Setup-->
+                <li>
+                    <a href="#chapterSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-book" id="fa"></i>&nbsp;Chapters</a>
+                    <ul class="collapse list-unstyled" id="chapterSubmenu">
+                        <li> <a href="https://vijayphysics.com/ChapterSetup/chapter/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Chapter</a></li>
+                        <li> <a href="https://vijayphysics.com/ChapterSetup/chapter/manage"><i class="fa fa-calendar"
+                                    id="fa"></i>Manage Chapter</a> </li>
+                    </ul>
+                </li>
+
+
+                <!--Videos Setup-->
+                <li>
+                    <a href="#videoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-video" id="fa"></i>&nbsp;Videos</a>
+                    <ul class="collapse list-unstyled" id="videoSubmenu">
+                        <li> <a href="https://vijayphysics.com/VideoSetup/video/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Video</a></li>
+                        <li> <a href="https://vijayphysics.com/VideoSetup/video/manage"><i class="fa fa-calendar"
+                                    id="fa"></i>Manage Video</a> </li>
+                    </ul>
+                </li>
+
+                <!--Assignment Setup-->
+                <li>
+                    <a href="#assignmentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-file" id="fa"></i>&nbsp;Assignment</a>
+                    <ul class="collapse list-unstyled" id="assignmentSubmenu">
+                        <li> <a href="https://vijayphysics.com/AssignmentSetup/assignment/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Assignment</a></li>
+                        <li> <a href="https://vijayphysics.com/AssignmentSetup/assignment/manage"><i
+                                    class="fa fa-calendar" id="fa"></i>Manage Assignment</a> </li>
+                    </ul>
+                </li>
+
+                <!--Formula Bar  Setup-->
+                <li>
+                    <a href="#formulaSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-file" id="fa"></i>&nbsp;Formula</a>
+                    <ul class="collapse list-unstyled" id="formulaSubmenu">
+                        <li> <a href="https://vijayphysics.com/FormulaSetup/formula/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Formula</a></li>
+                        <li> <a href="https://vijayphysics.com/FormulaSetup/formula/manage"><i class="fa fa-calendar"
+                                    id="fa"></i>Manage Formula</a> </li>
+                    </ul>
+                </li>
+
+
+                <!--Staff Setup-->
+                <li>
+                    <a href="#staffSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-users" id="fa"></i>Staff/Worker</a>
+                    <ul class="collapse list-unstyled" id="staffSubmenu">
+                        <li> <a href="https://vijayphysics.com/StaffSetup/staff/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Staff/Worker</a></li>
+                        <li> <a href="https://vijayphysics.com/StaffSetup/staff/manage"><i class="fa fa-calendar"
+                                    id="fa"></i>Manage Staff/Worker</a> </li>
+                        <li> <a href="https://vijayphysics.com/StaffSetup/staff/grantpermission"><i class="fa fa-cog"
+                                    id="fa"></i>Grant Permision</a> </li>
+                    </ul>
+                </li>
+
+                <!--Registration Setup-->
+                <li>
+                    <a href="#regSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-graduation-cap" id="fa"></i> Registration</a>
+                    <ul class="collapse list-unstyled" id="regSubmenu">
+                        <li> <a href="https://vijayphysics.com/RegSetup/registration/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Registration</a></li>
+                        <li> <a href="https://vijayphysics.com/RegSetup/registration/manage"><i class="fa fa-cog"
+                                    id="fa"></i>Manage Registration</a> </li>
+                        <li> <a href="https://vijayphysics.com/RegSetup/registration/report"><i class="fa fa-calendar"
+                                    id="fa"></i>Registration Report</a> </li>
+                    </ul>
+                </li>
+
+                <!--Inquiry Setup-->
+                <li>
+                    <a href="#inquirySubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-cog" id="fa"></i> Inquiry</a>
+                    <ul class="collapse list-unstyled" id="inquirySubmenu">
+                        <li> <a href="https://vijayphysics.com/InquirySetup/inquiry/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Inquiry</a></li>
+                        <li> <a href="https://vijayphysics.com/InquirySetup/inquiry/manage"><i class="fa fa-calendar"
+                                    id="fa"></i>Manage Inquiry</a> </li>
+                    </ul>
+                </li>
+
+                <!--Payment Setup-->
+                <li>
+                    <a href="#paymentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fa fa-cog" id="fa"></i> Payments</a>
+                    <ul class="collapse list-unstyled" id="paymentSubmenu">
+                        <li> <a href="https://vijayphysics.com/PaymentSetup/payment/add"><i class="fa fa-plus"
+                                    id="fa"></i>Add Payments</a></li>
+                        <li> <a href="https://vijayphysics.com/PaymentSetup/payment/manage"><i class="fa fa-calendar"
+                                    id="fa"></i>Manage Payments</a> </li>
+
+                        <li> <a href="https://vijayphysics.com/PaymentSetup/payment/report"><i class="fa fa-calendar"
+                                    id="fa"></i>Payment Report</a> </li>
+                    </ul>
+                </li>
+
+                <!--SMS Setup-->
+                <li><a href="https://vijayphysics.com/SmsSetup/sms"><i class="fa fa-envelope" id="fa"></i>
+                        Message/Sms</a></li>
+
+                <li><a href="https://vijayphysics.com/HelpSupport"> <i class="fa fa-question-circle" id="fa"></i> Help &
+                        Support</a></li> --}}
+
+            </ul>
+        </nav>

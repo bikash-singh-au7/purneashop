@@ -1,0 +1,26 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 m-auto p-0 bg-white py-3">
+            <h5 class="text-center text-info">Hii,
+                {{#if login}}
+                {{user.name}}
+                {{else}}
+                Guest
+                {{/if}}
+            </h5>
+            <p class="text-center">Stay Home, Stay Safe</p>
+            <div class="list-group">
+                <a href="/order" class="list-group-item list-group-item-action border-0"> <i class="fa fa-bars mr-3"></i> <span class="text-info">My Orders</span></a>
+
+                <a href="/users/address" class="list-group-item list-group-item-action border-0"> <i class="fa fa-map-marker mr-3"> </i> <span class="text-muted"> &nbsp; My Address</span></a>
+                
+                 <a href="/yourCart" class="list-group-item list-group-item-action border-0"> <i class="fa fa-shopping-cart mr-3"></i> <span class="text-muted">My Cart</span></a>
+
+                 <a href="#" class="list-group-item list-group-item-action border-0"> <i class="fa fa-user mr-3"></i> <span class="text-muted">My Profile</span></a>
+
+                 <a href="#" class="list-group-item list-group-item-action border-0"> <i class="fa fa-question mr-3"></i> <span class="text-muted">Help & Support</span></a>
+                
+            </div>
+        </div>
+    </div>
+</div>

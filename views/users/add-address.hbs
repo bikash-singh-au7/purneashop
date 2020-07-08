@@ -1,0 +1,83 @@
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-5 mx-auto py-3 px-5">
+            {{#if hasError}}
+                <div class="alert alert-danger col-md-12">
+                    {{error}}
+                </div>
+            {{/if}}
+            
+            <div class="shadow-sm p-3 bg-white">
+                <h5 class="text-info text-center p-2 m-0"> <i class="fa fa-map-marker"></i> Manage Address</h5>
+                <form action="/users/getAddAddress" id="signupForm" method="POST">
+                    <div class="form-group">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}" class="form-control">    
+
+                        <label for="">Full Name</label>
+                        <input type="text" class="form-control" name="user_name" placeholder="Enter Name" value="{{data.user_name}}">
+                        <span class="error text-danger" id="user_name_error">
+                            {{message.user_name_error}}
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="">Mobile No</label>
+                        <input type="tel" class="form-control" name="user_mobile" placeholder="Mobile No" value="{{data.user_mobile}}">
+                        <span class="error text-danger" id="user_mobile_error">
+                            {{message.user_mobile_error}}
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="">Address</label>
+                        <input type="text" class="form-control" name="address" placeholder="Enter Address" value="{{data.address}}">
+                        <span class="error text-danger" id="address_error">
+                            {{message.address_error}}
+                        </span>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label for="">Landmark</label>
+                        <input type="text" class="form-control" name="landmark" placeholder="Enter Landmark (Nearest School, Temple, Shop)" value="{{data.landmark}}">
+                        <span class="error text-danger" id="landmark_error">
+                            {{message.landmark_error}}
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="">Pin Code</label>
+                        <input type="number" class="form-control" name="pincode" placeholder="Pincode Here!!" value="{{data.pincode}}">
+                        <span class="error text-danger" id="pincode_error">
+                            {{message.pincode_error}}
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="">Address Type</label>
+                        <select class="form-control" name="address_type" id="">
+                            <option value="">Address Type</option>
+                            <option value="Home" >Home (7am - 9pm delivery)</option>
+                            <option value="Office">Office/Business (10am - 6pm delivery)</option>
+                        </select>
+                        <span class="error text-danger" id="address_type_error">
+                            {{message.address_type_error}}
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info">Add Address 
+                            <img id="addLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Add data
+    
+</script>

@@ -1,0 +1,98 @@
+<div class="container-fluid">
+    <div class="row">
+        {{!-- All Users --}}
+        <div class="col-md-3">
+            <a href="/admin/users">
+                <div class="card bg-info text-light shadow-sm">
+                    <div class="card-body py-2">
+                        <h1><i class="fa fa-user"></i></h1>
+                        <h6 class="float-left">All Users <i class="fa fa-angle-double-right"></i> </h6>
+                        <h4 class="float-right">{{users.length}}</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{!-- Pending Orders --}}
+        <div class="col-md-3">
+            <a href="/admin/pendingOrders">
+                <div class="card bg-danger text-light shadow-sm">
+                    <div class="card-body py-2">
+                        <h1><i class="fa fa-shopping-cart"></i></h1>
+                        <h6 class="float-left"> Pending Orders <i class="fa fa-angle-double-right"></i> </h6>
+                        <h4 class="float-right">{{pendingOrders.length}}</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{!-- Unshiped Order --}}
+        <div class="col-md-3">
+            <a href="/admin/unshippedOrders">
+                <div class="card bg-success text-light shadow-sm">
+                    <div class="card-body py-2">
+                        <h1><i class="fa fa-list-alt"></i></h1>
+                        <h6 class="float-left"> Unshiped Orders <i class="fa fa-angle-double-right"></i> </h6>
+                        <h4 class="float-right">{{unshippedOrders.length}}</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{!-- All Live Users --}}
+        <div class="col-md-3">
+            <a href="">
+                <div class="card bg-secondary text-light shadow-sm">
+                    <div class="card-body py-2">
+                        <h1><i class="fa fa-location-arrow"></i></h1>
+                        <h6 class="float-left"> Now Live <i class="fa fa-angle-double-right"></i> </h6>
+                        <h4 class="float-right">0</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        {{!-- Total Shipped Order --}}
+        <div class="col-md-4">
+            <a href="/admin/shippedOrders">
+                <div class="card bg-white shadow-sm">
+                    <div class="card-body py-2">
+                        <h1><i class="fa fa-location-arrow"></i></h1>
+                        <h6 class="float-left"> Total Shipped Order <i class="fa fa-angle-double-right"></i> </h6>
+                        <h4 class="float-right">
+                            {{totalShippedOrders.length}}
+                        </h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{!-- Today Shipped Order --}}
+        <div class="col-md-4">
+            <a href="/admin/todayShippedOrders">
+                <div class="card bg-white shadow-sm">
+                    <div class="card-body py-2">
+                        <h1><i class="fa fa-location-arrow"></i></h1>
+                        <h6 class="float-left"> Today Shipped Order <i class="fa fa-angle-double-right"></i> </h6>
+                        <h4 class="float-right">
+                            {{todayShippedOrders.length}}
+                        </h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{!-- Today Joined Users --}}
+        <div class="col-md-4">
+            <div class="card bg-white shadow-sm">
+                <div class="card-body py-2">
+                    <h1><i class="fa fa-users"></i></h1>
+                    <h6 class="float-left"> Today Joined Users <i class="fa fa-angle-double-right"></i> </h6>
+                    <h4 class="float-right">0</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

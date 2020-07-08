@@ -1,0 +1,502 @@
+.error{
+    color: #a00f0f;
+    margin-top: 2px;
+    font-weight: 500;
+    font-size: 15px;
+}
+.profile-pic{
+    height: 100px;
+    width: 100px;
+    border: 2px solid white;
+    border-radius: 100%;
+}
+.div-inline{
+    display: inline-block;
+}
+
+/*Color Card*/
+.color-card{
+    border: none;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    border-radius: 3px;
+    transition: 0.5s;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+.color-card #fa{
+    font-size: 50px;
+    text-align: left;
+    color: #fff;
+}
+.color-card span{
+    font-size: 30px;
+    color: #fff;
+    position: absolute;
+    top: 20px;
+    right: 13%;
+}
+.color-card p{
+    font-size: 17px;
+    color: #fff;
+}
+.color-card:hover{
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.4);
+}
+
+/*White Card*/
+.white-card{
+    height: auto;
+    padding: 20px;
+    margin-bottom: 10px;
+    width: 100%;
+    background: #fff;
+    border-radius: 3px;
+    transition: 0.5s;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+.white-card #fa{
+    font-size: 50px;
+    position: absolute;
+    right:10px;
+    margin-right: 20px;
+    color: #c1baba;
+}
+.white-card span{
+    font-size: 30px;
+    color: #5a5a5a;
+}
+.white-card p{
+    font-size: 17px;
+    color: #5a5a5a;
+    margin: 0px;
+}
+.white-card:hover{
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.4);
+}
+
+
+
+
+
+/*Start Header2 Section*/
+.main-content .header2{
+        height: 40px;
+        background: #fff;
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
+    }
+/*For Desktop*/
+@media only screen and (min-width: 990px)
+{
+    .main-content .main-button-container{
+        position: relative;
+        top:0px;
+        display: block;
+    }
+    .main-content .button-container{
+        display: inline-block;
+        float: none;
+        width:auto;
+        margin: 0px;
+        padding: 0px;
+    }
+    .main-content .button-container .btn{
+        height: 40px;
+        background: none;;
+        color:#5a5a5a;
+        font-size: 15px;
+        padding: 4px 15px;
+        margin: 0px -4px 0px 0px;
+        border-radius: 0px;
+        border: 0px;
+        outline: 0px;
+        transition: 0.5s;
+    }
+    .main-content .button-container .btn:hover{
+       background: #f0f0f0;
+       color:#5a5a5a;
+    }
+    .main-content .button-container .btn:focus{
+       background: #f0f0f0;
+       color:#5a5a5a;
+       outline: none;
+       box-shadow: none;
+    }
+    .main-content .right-button-container{
+       display: inline-block;
+       float: right;
+       width:auto;
+       margin: 0px;
+       padding: 0px;
+    }
+    .main-content .right-button-container .button-container{
+       display: inline-block;
+       float: none;
+       width:auto;
+       margin: 0px;
+       padding: 0px;
+    }
+
+    .main-content .active{
+        background: #f0f0f0;
+        color:#5a5a5a;
+    }
+    .main-content .right{
+        /*float: right;*/
+}
+    .main-content .togal-button{
+        display:none;
+    }
+     .main-content .hidden-option-container{
+        display: inline-block;
+        width: 250px;
+        background: #fff;
+        text-align: center;
+        position: absolute;
+        z-index: 12; 
+        top: 42px;
+        display: none;
+        padding: 15px 10px;
+        margin: 0px;
+        right: 0px;
+        box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+    }
+    .main-content .hidden-option-container .std-admission, .add-employee, .add-assignment, .fee-collection{
+        display: inline-block;
+        width: 100px;
+        height: 110px;
+        margin: 5px;
+        padding: 0px;
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        transition: 0.5s;
+    }
+    .main-content .hidden-option-container #fa{
+        display: block;
+        font-size: 40px;
+        margin: 10px 30px 0 30px;
+        color: #fff;
+    }
+    .main-content .hidden-option-container span{
+        display: block;
+        font-size: 16px;
+        margin-top: 5px;
+        color: #fff;
+    }
+    .main-content .hidden-option-container .std-admission{
+        background: #ac3535;
+    }
+    .main-content .hidden-option-container .add-employee{
+        background: #4CAF50;
+    }    
+    
+    .main-content .hidden-option-container .add-assignment{
+        background: #218c74;
+    }
+  .main-content .hidden-option-container .fee-collection{
+        background: #ff793f;
+    }
+    .main-content .hidden-option-container .std-admission:hover{
+        box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.8);
+    }
+    .main-content .hidden-option-container .add-employee:hover{
+        box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.8);
+    }    
+    
+    .main-content .hidden-option-container .add-assignment:hover{
+        box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.8);
+    }
+  .main-content .hidden-option-container .fee-collection:hover{
+        box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.8);
+    }
+    
+
+}
+
+/*For Mobile*/
+@media only screen and (max-width: 990px)
+{
+    
+    .main-content .main-button-container{
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
+        background: #fff;
+        position: relative;
+        top:0px;
+    }
+    .main-content .button-container{
+        display: block;
+        width:auto;
+        margin: 0px;
+        padding: 0px;
+        
+    }
+    
+    .main-content .button-container .btn{
+        height: 40px;
+        background: none;;
+        color:#5a5a5a;
+        width: 100%;
+        font-size: 15px;
+        padding: 4px 15px;
+        margin: 0px 0px 0px 0px;
+        border-radius: 0px;
+        text-align: left;
+        border: 0px;
+        outline: 0px;
+        transition: 0.5s;
+    }
+    .main-content .button-container .btn:hover{
+       background: #f0f0f0;
+       color:#5a5a5a;
+    }
+    .main-content .button-container .btn:focus{
+       background: #f0f0f0;
+       color:#5a5a5a;
+       outline: none;
+       box-shadow: none;
+    }
+    .main-content .right-button-container{
+       display: block;
+       width: 100%;
+       margin: 0px;
+       float: left;    
+       background: #fff;
+       padding: 0px;
+       box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
+    }
+    .main-content .right-button-container .button-container{
+       display: block;
+       width: 100%;
+       margin: 0px;
+       padding: 0px;
+    }
+
+    .main-content .active{
+        background: #f0f0f0;
+        color:#5a5a5a;
+    }
+    .main-content .togal-button{
+        display:block;
+        text-align: center;
+    }
+    .main-content .togal-button .btn-togal{
+        background: none;
+        display: block;
+        width: 100%;
+        margin: 0px;
+        padding: 8px 0px;
+        color:#5a5a5a;
+    }
+    .main-content .togal-button .btn-togal:hover{
+        background: #f5f5f5;
+    }
+    .main-content .togal-button .btn-togal:focus{
+        background: #f5f5f5;
+        outline: none;
+        box-shadow: none;
+    }
+
+}
+
+/*student-chart-container Section*/
+.student-chart-container{
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    background: #ffffff;
+    margin-bottom: 10px;
+}
+.student-chart-container h2{
+    color: #5a5a5a;
+    font-size: 16px;
+    text-align: left;
+}
+.student-chart-container h2 button{
+    float: right;
+    margin: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.student-chart-container h2 button:focus{
+    outline: none;
+}
+.student-chart-container .attendence-chart{
+    padding-top: 20px;
+}
+/*End Attendence Section*/
+
+
+/*fee-report-container Section*/
+.fee-report-container{
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);  
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #ffffff;
+}
+.fee-report-container h2{
+    color: #5a5a5a;
+    font-size: 16px;
+    text-align: left;
+}
+.fee-report-container h2 button{
+    float: right;
+    margin: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.fee-report-container h2 button:focus{
+    outline: none;
+}
+.fee-report-container .fee-report-chart{
+    padding-top: 20px;
+    display: none;
+}
+/*End fee-report-container Section*/
+
+
+
+/*News-feed*/
+.news-feed{
+    background: #fff;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+}
+.news-feed .news-heading h2{
+    background: #0984e3;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px;
+    text-align: center;
+}
+.news-feed .news-content{
+    background: #fff;
+    font-size: 15px;
+    padding: 10px;
+}
+/*End News-feed*/
+
+
+/*Calender Section*/
+.calendar-container{
+    background: #fff;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    margin-bottom: 10px;
+}
+.calendar-container h2{
+    color: #5a5a5a;
+    font-size: 16px;
+    text-align: left;
+}
+.calendar-container h2 button{
+    float: right;
+    margin: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.calendar-container h2 button:focus{
+    outline: none;
+}
+.calendar-container .calender-content{
+    padding-top: 20px;
+}
+
+/*End Calender Section*/
+
+/*to-do*/
+.to-do{
+    background: #fff;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+}
+.to-do .to-do-heading h2{
+    background: #ffffff;
+    color: #5a5a5a;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    padding: 15px;
+    text-align: left;
+}
+.to-do .to-do-heading h2 span{
+    text-align: left;
+}
+.to-do .to-do-heading h2 button{
+    float: right;
+    margin: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.to-do .to-do-heading h2 button:focus{
+    outline: none;
+}
+.to-do .to-do-content{
+   padding: 30px;
+   text-align: right;
+}
+.to-do .to-do-content .to-do-form{
+}
+.to-do .to-do-content .to-do-form input[type="text"], textarea, input[type="date"]{
+    width:100%;
+    margin: auto;
+    display: block;
+    margin: 0 auto 15px auto;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    color: #939191;
+    font-size: 14px;
+}
+.to-do .to-do-content .to-do-form button{
+    margin: 0px;
+    padding: 5px 10px;
+    background: #0984e3;
+    border: none;
+    border-radius: 2px;
+    color: #fff;        
+    cursor: pointer;
+}
+.inp {
+   border: 0; 
+   background: transparent; 
+   border-bottom: 0.07em solid #c7c7c7;
+}
+.inp:focus{
+    outline-style:none;
+    box-shadow:none;
+    border-color:blue;
+    background: transparent;
+       }
+.shad {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+
+/*Student Section*/
+.img-student-profile{
+    border-radius: 100%;
+    margin: auto;
+}
+
+
+
+/*=============================================*/
+.video-sections .inner{
+    padding: 0px;
+    
+}
+.video-sections .inner iframe {
+    position: relative;
+    width: 100%;
+    
+}
+.video-sections .inner .layer{
+    position: absolute;
+    height: 70px;
+    width: 95%;
+    top: 70px;
+    z-index: 99;
+}

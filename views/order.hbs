@@ -1,0 +1,114 @@
+<div class="container-fluid">
+    <div class="row p-0">
+        <div class="col-md-6 m-auto p-0 bg-white py-3">
+            <h5 class="text-center text-info">Hii,
+                {{#if login}}
+                {{user.name}}
+                {{else}}
+                Guest
+                {{/if}}
+            </h5>
+            <p class="text-center">Stay Home, Stay Safe</p>
+            {{#if success}}
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6 m-auto alert alert-success">
+                        {{success}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            {{#if list.length}}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 p-1">
+                        <h5 class="text-info px-2 py-2 h6"> <i class="fa fa-bars"></i> <span class="ml-2">My All Oders !!</span> </h5>
+                        <div id="accordion">
+                            {{#each list as |item|}}
+                                <div class="card mb-1 bg-white border-0">
+                                    <div class="card-header bg-white border-0" id="headingOne{{@index}}">
+                                        <div class="mb-0">
+                                            <div class="title float-left text-info">
+                                                <span> {{item.sn}} ) {{item.name}} (Status <span class="badge badge-success">{{item.order_status}}</span> ) 
+                                                
+                                            </div>
+                                            <div class="toggle-button float-right">
+                                                <button class="btn btn-info m-0 py-0 px-3" data-toggle="collapse"
+                                                    data-target="#collapseOne{{@index}}" aria-expanded="true"
+                                                    aria-controls="collapseOne">
+                                                    <i class="fa fa-angle-down"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="collapseOne{{@index}}" class="collapse" aria-labelledby="headingOne{{@index}}"
+                                        data-parent="#accordion">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="video-sections">
+                                                        <div class="container">
+                                                            <div class="row">
+                                                                <table class="table table-striped">
+                                                                    <tr>
+                                                                        <th>#SN</th>
+                                                                        <th>Name</th>
+                                                                        <th>Quantity</th>
+                                                                        <th>Price</th>
+                                                                        <th>Subtotal</th>
+                                                                    </tr>
+                                                                
+                                                                    {{#each item.cart as |cart|}}
+                                                                        <tr>
+                                                                            <th>{{@index}}</th>
+                                                                            <th>
+                                                                                <a target="_blank" href="products/{{cart.product_slag}}">{{cart.product_name}}</a> 
+                                                                            </th>
+                                                                            <th> {{cart.qty}} </th>
+                                                                            <th> {{cart.product_price}} </th>
+                                                                            <th> {{cart.subtotal}} </th>
+                                                                            
+                                                                        </tr>
+                                                                        
+                                                                    {{/each}}
+                                                                    <tr>
+                                                                        <td colspan="5" align="right"> Total Amount <i class="fa fa-inr"></i> {{item.total_amount}} </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="5" align="right"> Order Date :    {{item.order_date}} </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="5" align="right"> Shipped Date :    {{item.shipped_date}} </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-info" colspan="5" align="right"> Order Address :    {{item.address}} </td>
+                                                                    </tr>
+                                                                </table>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{else}}
+            <div class="alert alert-danger">
+                There is no Order
+            </div>
+            <div class="">
+                <a href="/" class="btn btn-info"> Start Shopping </a>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

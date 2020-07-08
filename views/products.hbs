@@ -1,0 +1,133 @@
+<div class="container-fluid">
+    <div class="row mt-2">
+         {{#if success}}
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6 m-auto alert alert-success">
+                            {{success}}
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+        {{#each list}}
+            <div class="col-md-9 col-sm-11 col-xs-11 px-1 mb-2 m-auto products">
+                <div class="row">
+                    <div class="col-md-6 bg-white">
+                        <span class="discount"> {{this.discount}} 
+                            <p class="p-0 m-0 text-light">Off</p>
+                        </span>
+                        <img src="/uploads/{{this.product_image}}" class="card-img-top img-responsive image" alt="...">
+                    </div>
+                    <div class="col-md-6 bg-white">
+                        <div class="card-body">
+                            <h3 class="card-title title text-info">{{this.product_name}}</h3>
+                            <hr>
+                            
+                            <div class="price text-info">
+                                <p class="mrp">
+                                    <i class="fa fa-rupee"></i> {{this.product_mrp}} 
+                                </p>
+                                <p class="dis-price text-dark font-weight-bold">
+                                    <i class="fa fa-rupee"></i> {{this.product_price}} {{this.product_unit}}
+                                </p>
+                            </div>
+                            <p class="card-text description">
+                                {{this.product_desc}}
+                            </p>
+
+                            <div class="mb-2">
+                                <div class="">
+                                    <div class="quantity">
+                                        <button id="minus">-</button><input type="text" id="quantity" value="1"><button
+                                            id="plus">+
+                                        </button>
+                                        
+                                        <button class="btn btn-info border-0 rounded-0 add-to-kart" value="/addToCart/{{this.product_slag}}">
+                                            Add to Cart <img id="cartLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
+                                        </button>
+                                    </div>
+                                    
+                                    <hr>
+                                    <p class="category">Category: <span class=""> {{this.product_category.name}} </span></p>
+                                    <hr>
+                                    <p class="unit">Unit: <span class=""> {{this.product_unit}} </span></p>
+                                    <hr>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>   
+
+
+<script>
+    /*let quantity = Number($("#quantity").val());
+    $("#minus").click(function(){
+
+        if(quantity <= 1){
+            $("#quantity").val(1);
+        }else{
+            quantity-=1;
+            $("#quantity").val(quantity);
+        }
+    })
+    $("#plus").click(function(){
+        quantity+=1;
+        $("#quantity").val(quantity);
+    })*/
+</script>
+
+<script>
+    
+    $(".quantity").on("click", "#minus", function(){
+        let parent = $(this).parent()
+        let value = Number(parent.find("input").val());
+        if(value <= 1){
+            parent.find("input").val(1);
+        }else{
+            value-=1;
+            parent.find("input").val(value);
+        }
+        
+    });
+
+     $(".quantity").on("click", "#plus", function(){
+        let parent = $(this).parent()
+        let value = Number(parent.find("input").val());
+        value+=1;
+        parent.find("input").val(value);
+        
+    });
+
+     $(".quantity").on("click", ".add-to-kart", function(){
+        let parent = $(this).parent()
+        let value = Number(parent.find("input").val());
+        let url = $(this).val();
+        $.ajax({
+            url: url,
+            data: {qty: value},
+            type: "GET",
+            dataType: "json",
+            beforeSend: function () {
+                $("#cartLoader").show();
+            },
+            complete: function () {
+                $("#cartLoader").hide();
+            },
+            success: function (response) {
+                if (response["status"]) {
+                    $("#cartLoader").hide();
+                    $(".myCart").html(response["cart"].length);
+                    parent.html("<a href='/yourCart' class='btn btn-info border-0 rounded-0'>View Cart <i class='fa fa-arrow-right'></i> </a>");
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,53 @@
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-5 mx-auto py-3 px-5">
+            <div class="shadow-sm p-3 bg-white">
+                <h5 class="text-info text-center p-2 m-0"> <i class="fa fa-user"></i> Signup Here!!</h5>
+                {{#if hasError}}
+                    {{#each message}}
+                        <div class="alert alert-danger">
+                            {{this}}
+                        </div>
+                    {{/each}}
+                {{/if}}
+                <form action="/users/signup" id="signupForm" method="POST">
+                    <div class="form-group">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}" class="form-control">    
+
+                        <label for="">Name</label>
+                        <input type="text" class="form-control" name="user_name">
+                        <span class="error" id="user_name_error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input type="text" class="form-control" name="user_email">
+                        <span class="error" id="user_email_error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Mobile</label>
+                        <input type="text" class="form-control" name="user_mobile">
+                        <span class="error" id="user_mobile_error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Password</label>
+                        <input type="password" class="form-control" name="user_password">
+                        <span class="error" id="user_password_error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info">Sign Up 
+                            <img id="addLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
+                        </button>
+                    </div>
+                </form>
+                <h6 class="text-right p-2">Allready have an Account <a href="/users/signin" class="text-info">Sign In Now</a></h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Add data
+    
+</script>

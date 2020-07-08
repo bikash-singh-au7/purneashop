@@ -1,0 +1,64 @@
+<nav id="sidebar">
+            <div id="dismiss">
+                <i class="fa fa-times"></i>
+            </div>
+
+            <div class="sidebar-header">
+                <h6 class="text-light"> <i class="fa fa-user"></i> 
+                    Hello, <span id="userName">
+                        {{#if login}}
+                            {{user.name}}
+                        {{else}}
+                            Guest
+                        {{/if}}
+                    </span>
+                </h6>
+                <div class="text-center">
+                    <a href="/users/account" class="btn btn-dark rounded-0 px-3 py-1">Account</a>
+                    <a href="/order" class="btn btn-dark rounded-0 px-3 py-1">Order</a>
+                </div>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false">Category</a>
+                    <ul class="collapse list-unstyled" id="categorySubmenu">
+                        
+                    
+                    {{#if catList.length}}
+                        {{#each catList as |item|}}
+                            <li>
+                                <a href="/category/{{item._id}}">{{item.category_name}}
+                                    <span class="float-right"> <i class="fa fa-angle-double-right"></i> </span>
+                                </a>
+                            </li>
+                        {{/each}}
+                    {{else}}
+                        <li>No Category Available</li>
+                    {{/if}}
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled components pt-0">
+                <li>
+                    <a href="#">Setting</a>
+                </li>
+                <li>
+                    <a href="#">Terms & Condition</a>
+                </li>
+                
+            </ul>
+            <ul class="list-unstyled components pt-0">
+                <li>
+                    {{#if login}}
+                        <a href="/users/logout">Logout</a>
+                    {{else}}
+                        <a href="/users/signin">Sign In</a>
+                    {{/if}}
+                </li>
+            </ul>
+        </nav>

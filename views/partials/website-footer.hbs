@@ -1,0 +1,65 @@
+<div class="container-fluid bg-info footer py-2">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <h1 class="text-white heading h6">About Us</h1>
+            <p class="content text-white px-2">
+                Purneashop.com is a Shopping Site that focuse mainy the purnea area. If you are from Purnea you can purchase all grocery items at cheepest price with fast delevery (within some hours). 
+            </p>
+            <p class="content text-white px-2">
+                Stay Home Stay Safe 
+            </p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <h1 class="text-white heading h6">Category</h1>
+            <ul class="list-group px-0">
+                {{#each catList as |cat|}}
+                    <li class="list-group-item bg-none m-0 py-0 px-2">
+                        <a href="/category/{{this._id}}" class="mb-1">
+                            <span class="content text-white"><i class="fa fa-angle-down"></i> {{this.category_name}}</span>
+                        </a>
+                    </li>
+                {{/each}}
+                
+            </ul>
+        </div>
+
+        <div class="col-md-4 mb-2">
+            <h1 class="text-white heading h6">Contact Info</h1>
+            <ul class="list-group px-0">
+                <li class="list-group-item bg-none m-0 py-1 px-1">
+                    <div class="h6 sub-heading text-white"> <i class="fa fa-map-marker"></i> Address</div>
+                    <div class="content text-white m-2">
+                        Girja Chauk Purnea, 854301, Bihar
+                    </div>
+                </li>
+                <li class="list-group-item bg-none m-0 py-1 px-1">
+                    <div class="h6 sub-heading text-white"> <i class="fa fa-phone"></i> Phone</div>
+                    <div class="content text-white m-2">
+                        <a href="tel:9117162463">+91-9117162463</a>
+                    </div>
+                </li>
+                <li class="list-group-item bg-none m-0 py-1 px-1">
+                    <div class="h6 sub-heading text-white"> <i class="fa fa-envelope"></i> Email</div>
+                    <div class="content text-white m-2">
+                        <a href="mailto:purneashop@gmail.com">purneashop@gmail.com</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12"><hr></div>
+        <div class="col-md-6">
+            <div class="social-icon">
+                <a href="" class="btn btn-light"> <i class="fa fa-facebook"></i> </a>
+                <a href="" class="btn btn-light"> <i class="fa fa-twitter"></i> </a>
+                <a href="" class="btn btn-light"> <i class="fa fa-youtube"></i> </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p class="content text-light my-2">@ PurneaShop.com 2020 All Rights Reserved</p>
+        </div>
+    </div>
+</div>

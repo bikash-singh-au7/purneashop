@@ -1,0 +1,158 @@
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+
+        <button type="button" id="sidebarCollapse" class="btn btn-info mobile-site">
+            <i class="fa fa-bars"></i>
+        </button>
+        <div class="website-logo mr-auto">
+            <a href="/"><img src="/images/logo/shop-logo.png" alt="" class="img img-fluid"></a>
+        </div>
+
+        <div class="website-icon ml-auto mobile-site">
+            <button type="button" class="btn btn-info" id="searchBtn"> <i class="fa fa-search"></i> </button>
+            <a href="/yourCart" class="btn btn-info"> <i class="fa fa-shopping-cart"></i>
+                <span class="badge badge-danger myCart">{{cart.length}}</span>
+            </a>
+        </div>
+        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation" id="top-header">
+            <i class="fas fa-align-justify"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="/yourCart" class="btn btn-info"> <i class="fa fa-shopping-cart"></i> Shopping Cart (
+                        <span class="myCart">{{cart.length}}</span>
+                        ) </a>
+                </li>
+                <li class="nav-item">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <i class="fa fa-user"></i> User
+                        </button>
+
+                        {{#if login}}
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="/users/profile" class="dropdown-item" type="button">Profile</a>
+
+                            <a href="/order" class="dropdown-item" type="button">Order</a>
+
+                            <a href="/users/logout" class="dropdown-item" type="button">Logout</a>
+
+                        </div>
+                        {{else}}
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="/users/signup" class="dropdown-item" type="button">Signup</a>
+                            <a href="/users/signin" class="dropdown-item" type="button">Signin</a>
+                        </div>
+                        {{/if}}
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="bg-info pb-1">
+    <div class="container fluid " id="formContainer">
+        <div class="row" id="searchForm">
+            <div class="col-md-12 px-3">
+                <form action="" id="searchNow">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend ">
+                            <div class="input-group-text bg-white text-info border-0">
+                                <i class="fa fa-search bg-white text-info"></i>
+                            </div>
+                        </div>
+                        <input type="search" class="form-control border-0 pl-0" id="search_query" name="search_query" placeholder="Search Here!!">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" id="searchedItem">
+            <div class="col-md-12">
+                <div class="text-center">
+                    <img id="searchLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
+                </div>
+                <div id="itemContainer" class="shadow-sm bg-white px-0 rounded">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#searchBtn").click(function () {
+            $("#searchForm").fadeToggle();
+            $("#searchedItem").fadeToggle();
+        })
+    })
+
+    $("#search_query").on("keyup", function () {
+        let q = $(this).val();
+        if (q.length > 0) {
+            $.ajax({
+                url: "/search",
+                data: $(this).serialize(),
+                type: "POST",
+                dataType: "json",
+                beforeSend: function () {
+                    $("#searchLoader").show();
+                },
+                complete: function () {
+                    $("#searchLoader").hide();
+                },
+                success: function (response) {
+                    if (response["isData"]) {
+                        let html = "";
+                        for (let i = 0; i < response["list"].length; i++) {
+                            html = html + "<div class='p-2'> <a href='/products/" + response["list"][i].product_slag + "'>" + response["list"][i].product_name + "</a></div>";
+                        }
+                        $("#itemContainer").html(html);
+                    } else {
+                        let html = "<div class='p-2 text-muted'> " + response["list"] + "</div>";
+                        $("#itemContainer").html(html);
+                    }
+                }
+            });
+        } else {
+            $("#itemContainer").html()
+        }
+
+    })
+
+    $("#searchNow").on("submit", function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/search",
+            data: $(this).serialize(),
+            type: "POST",
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            success: function (response) {
+                if (response["status"] == 0) {
+                    $("#e_student_mobile").html(response["student_mobile"]);
+                } else {
+                    $("#loader").hide();
+                    $("#e_otp").html(response['otpStatus']);
+                    $("#requestHtml").html(response['html']);
+
+                }
+            }
+        });
+    });
+
+
+
+</script>

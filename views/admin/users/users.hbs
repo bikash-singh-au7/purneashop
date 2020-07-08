@@ -1,0 +1,74 @@
+<div class="container-fluid">
+    <div class="row p-0">
+        <div class="col-md-10 m-auto">
+            <div class="page-header">
+                <div class="inner-content">
+                    <!-- Class Details -->
+                    <div class="row">
+                        <div class="col-md-12 p-0 m-0" id="alert">
+
+                        </div>
+                        <div class="col-md-12 p-0 m-0 border">
+                            <div class="float-left px-2 py-2">
+                                <span class="text-muted font-weight-bold"> <i class="fa fa-cog"></i> Manage
+                                    Users</span>
+                            </div>
+                            {{!-- <div class="float-right px-2">
+                                <button class="btn btn-info px-2 my-1" type="button" data-toggle="modal"
+                                    data-target="#addModal" id="addBtn"> <i class="fa fa-plus"></i> Add Category
+                                </button>
+                            </div> --}}
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="row border">
+                            <div class="col-md-12 m-auto p-2 table-responsive">
+                                <table id="dataTable" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#Id</th>
+                                            <th>User Name</th>
+                                            <th>Email</th>
+                                            <th>Mobile</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Edit</th>
+                                            <th class="text-center">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {{#each list}}
+                                        <tr id="row-{{this._id}}">
+                                            <td>{{@index}}</td>
+                                            <td>{{this.user_name}}</td>
+                                            <td>{{this.user_email}}</td>
+                                            <td>{{this.user_mobile}}</td>
+                                            <td class="text-center">
+                                                {{#if this.user_status}}
+                                                <span class='badge badge-info'>Active</span>
+                                                {{else}}
+                                                <span class='badge badge-danger'>Disabled</span>
+                                                {{/if}}
+                                            </td>
+                                            
+
+                                            <td><button class="btn btn-info px-2 py-1" onclick="getId('{{this._id}}')">
+                                                    <i class="fa fa-edit"></i> </button></td>
+                                            <td><button class="btn btn-danger px-2 py-1"
+                                                    onclick="deleteData('{{this._id}}')"> <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="container-fluid mt-5">
+    <div class="row px-5 mt-5">
+        <div class="col-md-4 mx-auto shadow-sm mt-5">
+            <form action="" method="post" id="loginForm">
+                <div class="">
+                    <h4 class="text-center py-3 text-info"> <i class="fa fa-user"></i> Login Here</h4>
+                </div>
+                <div class="form-group mt-">
+                    <label for="user_name" class="font-weight-bold"> User Name </label>
+                    <input type="text" placeholder="User Name" name="user_name" class="form-control" value=""
+                        autocomplete="off">
+                    <div class="error text-danger" id="user_name_error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="user_password" class="font-weight-bold"> Password </label>
+                    <input type="password" name="user_password" class="form-control" value="">
+                    <div class="error text-danger" id="user_password_error"></div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="submit" class="btn btn-info"> Log In
+                        <img id="loginLoader" style="display:none" src="images/loader/ajax-loader.gif" alt="">
+                    </button>
+
+                    <div class="error alert alert-success py-0 mt-1" id="logedIn"></div>
+                </div>
+            </form>
+            <div class="text-right">
+                <a href="admin/forgetPassword" class="text-primary">Forget Password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $("body").on("submit", "#loginForm", function(e){
+            e.preventDefault();
+            $(".error").html("");
+            $.ajax({
+                url: 'admin/auth',
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                beforeSend:function(){
+                    $("#loginLoader").show();
+                },
+                complete:function(){
+                    $("#loginLoader").hide();
+                },
+                success: function(response){
+                    if(response.login){
+                        $("#logedIn").html("Login Successfull");
+                        window.location = "admin/home";
+                    }else{
+                        $("#user_name_error").html("User Name is Invalid");
+                        $("#user_password_error").html("User Password is Invalid");
+                    }
+                }
+            });
+        })
+    });
+
+
+
+</script>
