@@ -32,8 +32,9 @@ module.exports = {
         // }
         msg91.sendOne(authkey, number, message, senderid, route, dialcode, function (response) {
             //Returns Message ID, If Sent Successfully or the appropriate Error Message
-            console.log(response);
-            
+            // console.log(response);
+            return true;
+
         });
     }
 }

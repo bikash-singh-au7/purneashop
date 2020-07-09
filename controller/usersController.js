@@ -165,6 +165,7 @@ controller.enterOTP = (req, res, next) => {
     // }
     msg91.sendOne(authkey, number, message, senderid, route, dialcode, function (response) {
         //Returns Message ID, If Sent Successfully or the appropriate Error Message
+        
         console.log(response);
         req.session.passport = {};
         return res.render("users/enter-otp", { csrfToken: req.csrfToken(), isSuccess: true, success_msg: "OTP Send Successfully." });

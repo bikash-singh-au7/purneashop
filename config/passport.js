@@ -67,7 +67,7 @@ passport.use('local.signup', new localStrategy({
                 _id: user._id,
                 mobile: user.user_mobile
             };
-            
+
             req.session.otp = {
                 name: user.user_name,
                 _id: user._id,
@@ -98,7 +98,7 @@ passport.use('local.signin', new localStrategy({
     }
 
 
-    userModel.findOne({ 'user_mobile': user_mobile }, (err, user) => {
+    userModel.findOne({ 'user_mobile': user_mobile, user_status: 1 }, (err, user) => {
         if (err) {
             return done(err);
         }
