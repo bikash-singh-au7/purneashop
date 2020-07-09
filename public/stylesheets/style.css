@@ -223,13 +223,15 @@ body {
 
 .product-card .heading{
   padding: 15px 0px 0px 0px;
-  font-size: 20px !important;
+  font-size: 16px !important;
   font-weight: bolder;
   color: #313131;
 }
 .product-card .card-body{
   padding-top: 2px;
-  padding-bottom: 1px;
+  padding-left: 3px;
+  padding-right: 3px;
+  padding-bottom: 20px;
 }
 .product-card .card-body:hover{
   box-shadow: 0px 1px 3px #fff;
@@ -239,34 +241,32 @@ body {
   top: 0px;
   background-color: #053B44 !important;
   color: white;
-  font-size: 10px;
+  font-size: 8px;
   z-index: 2;
   border-radius: 10px 20px;
-  padding: 10px 7px;
-  left: 0px;
+  padding: 5px 4px;
+  left: 15px;
 }
 .product-card .image{
-  height: 120px;
   padding: 0px;
-  width: 110px;
   margin: auto;
 }
 
 .product-card .card-body .title{
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 2px;
   margin-bottom: 2px;
   text-align: center;
 }
 .product-card .card .description{
-  font-size: 15px;
+  font-size: 13px;
   text-align: center;
 }
 .product-card .card-body .price{
   text-align: center;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 14px;
 }
 .product-card .price p{
   display: inline-block;
@@ -276,224 +276,111 @@ body {
 .product-card .price .mrp{
   display: inline-block;
   text-align: center;
-  margin-right: 10px;
+  margin-right: 5px;
   text-decoration: line-through;
   color: red;
 }
 
 
-
+/* Mobile Design */
 @media (max-width: 577px) {
-  #product-card{
-    /* background-color: #f4f4f4 !important; */
-    background-color: #ffffff !important;
-    border: 1px solid #eceaea;
+  .product-card .card-body .quantity{
+    position: absolute;
+    
   }
-  
-  #product-card .heading{
-    padding: 15px 0px 0px 0px;
-    font-size: 20px !important;
-    font-weight: bolder;
-    color: #313131;
+  .product-card .quantity button{
+    background-color: #053B44 !important;
+    height: 25px;
+    position: relative;
+    width: 25px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-top: 10px;
+    border: 0;
+    outline: none;
+    color: #fff;
   }
-  #product-card .card-body{
-    padding-top: 2px;
-    padding-bottom: 1px;
+  .product-card .quantity #plus{
+    background-color: #053B44 !important;
+    height: 25px;
+    position: relative;
+    width: 25px;
+    position: absolute;
+    left: 55px;
+    top: 0;
+    margin-top: 10px;
+    border: 0;
+    outline: none;
+    color: #fff;
   }
-  #product-card .card-body:hover{
-    box-shadow: 0px 1px 3px #fff;
-  }
-  #product-card .discount{
+  .product-card .quantity .add-to-kart{
+    height: 25px;
+    width: 80px;
     position: absolute;
     top: 0px;
-    background-color:#053B44 !important;
-    color: white;
+    left: 90px;
     font-size: 10px;
-    z-index: 2;
-    border-radius: 10px 20px;
-    padding: 10px 7px;
-    left: 0px;
+    padding: 3px;
   }
-  #product-card .image{
-    height: 120px;
-    padding: 0px;
-    width: 110px;
-    margin: auto;
+  .product-card .quantity button:hover{
+    background-color: #053B44 !important;
+    cursor: pointer;
+    border: 0;
+    outline: none;
   }
-  
-  #product-card .card-body .title{
+  .product-card .quantity #plus:hover{
+    background-color: #053B44 !important;
+    cursor: pointer;
+    border: 0;
+    outline: none;
+  }
+  .product-card .quantity input[type=text]{
+    background-color: white;
+    height: 25px;
+    text-align: center;
+    top: 10px;
+    left: 25px;
+    position: absolute;
+    font-size: 12px;
+    width: 30px;
+    outline: none;
+    border: 1px solid #053B44 !important;
+  }
+}
+
+/* Desktop Design */
+@media (min-width: 577px) {
+  .product-card .card-body{
+    text-align: center;
+  }
+  .product-card .card-body .title{
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     margin-top: 2px;
     margin-bottom: 2px;
+    text-align: center !important;
+  }
+  .product-card .card .description{
+    font-size: 13px;
     text-align: center;
   }
-  #product-card .card .description{
-    font-size: 15px;
-    text-align: center;
-  }
-  #product-card .card-body .price{
-    text-align: center;
+  .product-card .card-body .price{
+    text-align: center !important;
     font-weight: 600;
-    font-size: 17px;
+    font-size: 14px;
   }
-  #product-card .price p{
+  .product-card .price p{
     display: inline-block;
     font-size: 14px;
     text-align: center;
   }
-  .product-card .price .mrp{
-    display: inline-block;
-    text-align: center;
-    margin-right: 10px;
-    text-decoration: line-through;
-    color: red;
-  }
-
-
-  #product-card .card-body .quantity{
-    position: absolute;
-    
-  }
-  #product-card .quantity button{
-    background-color: #053B44 !important;
-    height: 30px;
-    position: relative;
-    width: 30px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    margin-top: 10px;
-    border: 0;
-    outline: none;
-    color: #fff;
-  }
-  #product-card .quantity #plus{
-    background-color: #053B44 !important;
-    height: 30px;
-    position: relative;
-    width: 30px;
-    position: absolute;
-    left: 80px;
-    top: 0;
-    margin-top: 10px;
-    border: 0;
-    outline: none;
-    color: #fff;
-  }
-  #product-card .quantity .add-to-kart{
-    height: 30px;
-    width: 100px;
-    position: absolute;
-    top: 0px;
-    left: 120px;
-    font-size: 12px;
-    padding: 3px;
-  }
-  #product-card .quantity button:hover{
-    background-color: #053B44 !important;
-    cursor: pointer;
-    border: 0;
-    outline: none;
-  }
-  #product-card .quantity #plus:hover{
-    background-color: #053B44 !important;
-    cursor: pointer;
-    border: 0;
-    outline: none;
-  }
-  #product-card .quantity input[type=text]{
-    background-color: white;
-    height: 30px;
-    text-align: center;
-    top: 10px;
-    left: 30px;
-    position: absolute;
-    font-size: 12px;
-    width: 50px;
-    outline: none;
-    border: 1px solid #053B44 !important;
-  }
-}
-
-
-
-@media (max-width: 577px) {
   .product-card .card-body .quantity{
-    position: absolute;
-    
+    position: relative;
+    text-align: center;
   }
   .product-card .quantity button{
     background-color: #053B44 !important;
-    height: 30px;
-    position: relative;
-    width: 30px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    margin-top: 10px;
-    border: 0;
-    outline: none;
-    color: #fff;
-  }
-  .product-card .quantity #plus{
-    background-color: #053B44 !important;
-    height: 30px;
-    position: relative;
-    width: 30px;
-    position: absolute;
-    left: 80px;
-    top: 0;
-    margin-top: 10px;
-    border: 0;
-    outline: none;
-    color: #fff;
-  }
-  .product-card .quantity .add-to-kart{
-    height: 30px;
-    width: 100px;
-    position: absolute;
-    top: 0px;
-    left: 120px;
-    font-size: 12px;
-    padding: 3px;
-  }
-  .product-card .quantity button:hover{
-    background-color: #053B44 !important;
-    cursor: pointer;
-    border: 0;
-    outline: none;
-  }
-  .product-card .quantity #plus:hover{
-    background-color: #053B44 !important;
-    cursor: pointer;
-    border: 0;
-    outline: none;
-  }
-  .product-card .quantity input[type=text]{
-    background-color: white;
-    height: 30px;
-    text-align: center;
-    top: 10px;
-    left: 30px;
-    position: absolute;
-    font-size: 12px;
-    width: 50px;
-    outline: none;
-    border: 1px solid #053B44 !important;
-  }
-}
-
-
-
-
-
-@media (min-width: 577px) {
-  .product-card .card-body .quantity{
-    
-  }
-  .product-card .quantity button{
-    background-color: #17a2b8;
     height: 30px;
     width: 30px;
     margin-top: 10px;
@@ -514,7 +401,9 @@ body {
     height: 30px;
     width: 100px;
     font-size: 12px;
+    display: block;
     padding: 3px;
+    margin: 5px auto 0px auto;
   }
   .product-card .quantity button:hover{
     background-color: #026777;
@@ -534,8 +423,10 @@ body {
     text-align: center;
     font-size: 12px;
     width: 50px;
+    position: relative;
     outline: none;
-    border: 1px solid #17a2b8;
+    top: -1px;
+    border: 1px solid#053B44 !important;
   }
 }
 
@@ -571,21 +462,38 @@ body {
 .products .category, .unit{
   font-size: 16px;
 }
+.products .quantity{
+  position: relative;
+}
 .products .quantity button{
   background-color: #053B44 !important;
   padding: 3px 4px;
   margin: 0px;
+  position: relative;
+
   color: #fff;
-  border: 1px solid #b4b1b1;
+  border: 1px solid #053B44 !important;
   outline: none;
+}
+.products .quantity #minus{
+  position: relative;
+  width: 35px;
+}
+.products .quantity #plus{
+  position: relative;
+  width: 35px;
 }
 .products .add-to-kart{
   background-color: #053B44 !important;
-  padding: 4px 5px;
+  padding: 3px 4px;
   margin: 0px;
   color: #fff;
+  width: 100px;
+  height: 32px;
+  position: relative;
+  left: 5px;
   font-size: 14px;
-  border: 1px solid #b4b1b1;
+  border: 1px solid #053B44 !important;
   outline: none;
 }
 .products .quantity button:hover{
@@ -597,15 +505,53 @@ body {
 }
 .products .quantity input[type=text]{
   background-color: #f8f8f8;
-  padding: 4px 4px;
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
   margin: 0px;
+  padding: 6px;
   border: 1px solid #053B44 !important;
   width: 50px;
-
   outline: none;
+  top: -1px;
+  position: relative;
 }
+
+/* Desktop Design */
+@media (min-width: 577px) {
+  .products .quantity{
+    position: relative;
+  }
+  .products .quantity button{
+    height: 35px;
+    width: 30px;
+  }
+  .products .quantity #minus{
+    position: relative;
+    left: 0px;
+  }
+  .products .quantity #plus{
+    position: relative;
+
+  }
+  .products .add-to-kart{
+    height: 35px;
+    width: 110px !important;
+    position: relative;
+    left: 20px;
+  }
+  .products .quantity button:hover{
+    
+  }
+  .products .quantity input[type=text]{
+    height: 35px;
+    position: relative;
+  
+  }
+}
+
+
+
+
 
 
 @media (min-width: 1000px) {

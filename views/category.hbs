@@ -1,4 +1,4 @@
-<div class="container-fluid bg-light">
+<div class="container-fluid bg-light mb-5">
     <div class="row mt-2">
         <div class="col-md-12 m-auto my-2">
             <div class="row">
@@ -22,9 +22,9 @@
                                     <span class="discount"> {{this.discount}}
                                         <p class="p-0 m-0 text-white">Off</p>
                                     </span>
-                                    {{!-- <img src="/images/logo/shop-logo.png" class="card-img-top img-responsive image" alt="..."> --}}
+                                    
                                     <a href="/products/{{this.product_slag}}" class="card-link card border-0">
-                                        <img src="https://thumbs.dreamstime.com/b/grocery-store-logo-design-template-fresh-food-shop-label-vector-illustration-white-background-grocery-store-logo-design-117786023.jpg"
+                                        <img src="{{this.product_image}}"
                                         class="card-img-top img-responsive image" alt="...">
                                     </a>
                                 </div>
@@ -83,10 +83,8 @@
             </div>
         {{/if}}
 
-        
     </div>
-
-
+    
 
 <script>
     

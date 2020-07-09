@@ -245,3 +245,8 @@ a{
     background-color: transparent !important;
     border: none;
 }
+.error{
+    color:rgb(150, 12, 12);
+    font-size: 14px;
+    font-weight: 900;
+}

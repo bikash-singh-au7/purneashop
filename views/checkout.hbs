@@ -3,15 +3,24 @@
         <div class="col-md-6 m-auto">
             {{#if errors}}
                 {{#each errors}}
-                    <div class="alert alert-danger">
-                        {{this}}
-                    </div>
+                <div class="alert alert-danger">
+                    {{this}}
+                </div>
+                {{/each}}
+            {{/if}}
+
+            {{#if success.length}}
+                {{#each success}}
+                <div class="alert alert-success">
+                    {{this}}
+                </div>
                 {{/each}}
             {{/if}}
             <div class="shadow-sm p-3 bg-white">
                 <div class="">
                     <h6 class="text-info text-center"> <i class="fa fa-send"></i> Confirm Your Order</h6>
                 </div>
+                {{#if list.length}}
                 <form action="/checkout" method="POST">
 
                     <div class="form-group">
@@ -19,14 +28,15 @@
                         <select name="address" id="" class="form-control">
                             <option value="">Select </option>
                             {{#each list}}
-                                <option value="{{this._id}}">{{this.user_name}} ({{this.address}}, {{this.locality}}, {{this.landmark}} {{this.address}}, {{this.locality}}, {{this.landmark}} )</option>
+                            <option value="{{this._id}}">{{this.user_name}} ({{this.address}}, {{this.landmark}})
+                            </option>
                             {{/each}}
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="">Payment Mode</label>
-                        <select name="payment_mode" id="" class="form-control"> 
+                        <select name="payment_mode" id="" class="form-control">
                             <option value="">Select Mode</option>
                             <option value="COD">COD</option>
                         </select>
@@ -37,6 +47,20 @@
                     </div>
 
                 </form>
+                {{else}}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xs-6 co-md-6">
+                                <h6 class="text-danger">You Don't have any address added, Pease Add Address First</h6>
+                            </div>
+                            <div class="col-xs-6 co-md-6 text-right">
+                                <a href="/users/addAddress" class="btn btn-info">Add Address</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
             </div>
         </div>
     </div>

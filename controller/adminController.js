@@ -449,11 +449,44 @@ controller.products = (req, res, next) => {
 
 
 controller.addProduct = async (req, res, next) => {
+    
     if (!req.session.user) return res.redirect("/admin");
+    console.log(req.files)
+
+
+    const body = req.body;
+    req.checkBody("product_name", "Product Name").notEmpty();
+    req.checkBody("product_desc", "Decription Required").notEmpty();
+    req.checkBody("product_slag", "Slag Required").notEmpty();
+    req.checkBody("product_category", "Category Required").notEmpty();
+    req.checkBody("product_mrp", "MRP Required").notEmpty();
+    req.checkBody("product_price", "Price Required").notEmpty();
+    req.checkBody("product_unit", "Unit Required").notEmpty();
+    req.checkBody("product_stock", "Stock Required").notEmpty();
+    const errors = req.validationErrors();
+    if(errors){
+        const message = [];
+        errors.forEach(element => {
+            message.push(element.msg);
+        });
+        req.flash("error", message);
+        return res.redirect("/admin/products");
+    }
+
+    productModel.findOne({product_slag: body.product_slag}, (err, data)=>{
+        if(err) {
+            req.flash("error", "OOps Error");
+            return res.redirect("/admin/products");
+        }
+        if(data) {
+            req.flash("error", "Product Slag Allready Available");
+            return res.redirect("/admin/products");
+        }
+    })
 
     const result = await cloudinary.v2.uploader.upload(req.file.path);
 
-    const body = req.body;
+    
     body.user_id = req.session.user._id;
     body.product_image = result.url;
 

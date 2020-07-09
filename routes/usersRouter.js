@@ -5,6 +5,7 @@ const userController = require("../controller/usersController");
 const { check, validationResult } = require('express-validator');
 const csrf = require("csurf");
 const msg91 = require('msg91-sms');
+const sms = require("../helper/sendSms");
 const passport = require('passport');
 const csrfProtection = csrf();
 router.use(csrf());
@@ -17,14 +18,14 @@ router.get('/deleteAddress', isLoggedIn, userController.deleteAddress);
 router.get('/logout', isLoggedIn, userController.logout);
 router.get("/sms", (req, res) => {
   //Authentication Key 
-  var authkey = '298976AeKmvHKltq5da5a717298976AeKmvHKltq5da5a717';
+  var authkey = '224991AuVykO8pSsz5b4313bf';
 
   //for multiple numbers
   var numbers = [];
   numbers.push('');
 
   //for single number
-  var number = '919117162463';
+  var number = '9117162463';
 
   //message
   var message = 'welcome';
@@ -49,10 +50,12 @@ router.get("/sms", (req, res) => {
   });
 })
 
-router.get("/sendSms", (req, res)=>{
-
+router.get("/sendSms", (req, res)=>{  
+  sms.sendSMS(9117162463, "wecome");
   
 })
+router.get("/enterOTP", userController.enterOTP);
+router.post("/verifyOTP", userController.verifyOTP);
 
 router.use("/", notLoggedIn, (req, res, next) => {
   next();
@@ -62,7 +65,7 @@ router.use("/", notLoggedIn, (req, res, next) => {
 router.get('/signup', userController.signup);
 
 router.post('/signup', passport.authenticate('local.signup', {
-  successRedirect: '/users/account',
+  successRedirect: '/users/enterOTP',
   failureRedirect: '/users/signup',
   failureFlash: true
 }));
@@ -70,12 +73,13 @@ router.post('/signup', passport.authenticate('local.signup', {
 router.get('/signin', userController.signin);
 
 router.post('/signin', passport.authenticate('local.signin', {
-  successRedirect: '/users/account',
+  successRedirect: '/yourCart',
   failureRedirect: '/users/signin',
   failureFlash: true
 }));
 
 // router.post('/signup', userController.getSignup);
+
 
 
 module.exports = router;

@@ -5,9 +5,7 @@ const bcrypt = require("bcrypt-nodejs");
 // create product schema
 const userSchema = new Schema({
     user_name: {
-        type: String, 
-        unique: true,
-        required: true, 
+        type: String,
     },
     user_email: {
         type: String, 
@@ -15,7 +13,8 @@ const userSchema = new Schema({
     },
     user_mobile: {
         type: Number, 
-        required: true
+        required: true,
+        unique:true
     },
     user_password: {
         type: String,
@@ -24,7 +23,7 @@ const userSchema = new Schema({
     user_status: {
         type: Number, 
         required: true, 
-        default:1
+        default:0
     }
 });
 

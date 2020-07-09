@@ -1,3 +1,4 @@
+{{!-- Image Sider --}}
 <div class="container mt-2">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -30,6 +31,7 @@
 
 
 <div class="container bg-light">
+    {{!-- Alert Sections --}}
     <div class="row mt-2">
         <div class="col-md-12 m-auto my-2">
             <div class="row">
@@ -41,6 +43,8 @@
             </div>
         </div>
     </div>
+
+    {{!-- Sale Sections --}}
     {{#if list.length}}
     <div class="row mx-0 product-card">
         <div class="col-md-12">
@@ -48,21 +52,21 @@
             <hr>
         </div>
         {{#each list}}
-        <div class="col-md-2 col-sm-6 col-xs-12 mb-2">
+        <div class="col-md-3 col-sm-6 col-xs-12 mb-2">
             <div class="card border-0 bg-none">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-xs-4 col-md-12 text-center">
+                        <div class="col-xs-3 col-md-12 text-center">
                             <span class="discount"> {{this.discount}}
                                 <p class="p-0 m-0 text-white">Off</p>
                             </span>
                             
                             <a href="/products/{{this.product_slag}}" class="card-link card border-0">
                                 <img src="{{this.product_image}}"
-                                    class="card-img-top img-responsive image" alt="...">
+                                    class="card-img-top img-responsive image img-fluid" alt="...">
                             </a>
                         </div>
-                        <div class="col-xs-8 col-md-12">
+                        <div class="col-xs-9 col-md-12">
 
                             <div class="price text-info text-left">
                                 <p class="dis-price font-weight-bold text-dark m-0">
@@ -133,8 +137,8 @@
             <a href="/category/{{this._id}}" title="{{this.category_name}}">
                 <div class="card bg-white border-0 rounded-0 shadow-sm">
                     <div class="card-body">
-                        <h1 class="float-left"><i class="fa fa-list text-info"></i></h1>
-                        <h6 class="text-center text-info float-right pt-3">
+                        <h1 class="float-left h5"><i class="fa fa-list text-info"></i></h1>
+                        <h6 class="text-center text-info float-right pt-1 content">
                             {{this.category_name}} <i class="fa fa-angle-double-right"></i>
                         </h6>
                     </div>
@@ -159,21 +163,21 @@
             <hr>
         </div>
         {{#each arr}}
-        <div class="col-md-2 col-sm-6 col-xs-12 px-1 mb-2">
+        <div class="col-md-3 col-sm-6 col-xs-12 px-1 mb-2">
             <div class="card border-0 product-card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-xs-4 col-md-12 text-center">
+                        <div class="col-xs-3 col-md-12 text-center">
                             <span class="discount"> {{this.discount}}
                                 <p class="p-0 m-0 text-white">Off</p>
                             </span>
                             {{!-- <img src="/images/logo/shop-logo.png" class="card-img-top img-responsive image" alt="..."> --}}
                             <a href="/products/{{this.product_slag}}" class="card-link card border-0">
                                 <img src="{{this.product_image}}"
-                                    class="card-img-top img-responsive image" alt="...">
+                                    class="card-img-top img-responsive image img-fluid" alt="...">
                             </a>
                         </div>
-                        <div class="col-xs-8 col-md-12">
+                        <div class="col-xs-9 col-md-12">
 
                             <div class="price text-info text-left">
                                 <p class="dis-price font-weight-bold text-dark m-0">

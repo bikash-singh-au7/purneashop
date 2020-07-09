@@ -5,6 +5,7 @@ const addressModel = require("../models/addressModel");
 const orderModel = require("../models/orderModel");
 const { session } = require("passport");
 const mongoose = require("mongoose");
+const sms = require("../helper/sendSms");
 
 // Create a blank controller
 const controller = {};
@@ -12,30 +13,39 @@ const controller = {};
 
 // create index controller
 controller.index = async (req, res, next) => {
-    const productData = await productModel.find({product_status:1}).limit(5).lean();
+    // Getting Product
+    const productData = await productModel.find({product_status:1}).limit(4).lean();
+
+    // Getting All Category
     const categoryData = await categoryModel.find({category_status:1}).lean();
     let categoryWise = {};
     let p = [];
+
+    // Add Discount Properties
     for (let x in productData) {
         const mrp = productData[x].product_mrp;
         const price = productData[x].product_price;
         const per = Math.trunc(100 - ((100 * price) / mrp));
         productData[x].discount = per + "%";
     }
-
+    
+    // Getting Data Category Wise
     for(let x in categoryData){
-        p = await productModel.find({"product_category._id": categoryData[x]._id, product_status:1}).limit(5).lean();
+        p = await productModel.find({"product_category._id": categoryData[x]._id, product_status:1}).limit(4).lean();
         categoryWise[categoryData[x].category_name] = p;
     }
 
-    for (let x in p) {
-        const mrp = p[x].product_mrp;
-        const price = p[x].product_price;
-        const per = Math.trunc(100 - ((100 * price) / mrp));
-        p[x].discount = per + "%";
+    // Adding discount property
+    for (const [key, value] of Object.entries(categoryWise)) {
+        for (const [innerKey, innerValue] of Object.entries(value)) {
+            const mrp = innerValue.product_mrp;
+            const price = innerValue.product_price;
+            const per = Math.trunc(100 - ((100 * price) / mrp));
+            categoryWise[key][innerKey].discount = per;
+        } 
     }
+    
 
-    console.log(categoryWise)
     return res.render('index', { list: productData, catList: categoryData, categoryWise:categoryWise, title: 'Online Grocery', success: req.flash("success")});
 }
 
@@ -94,10 +104,10 @@ controller.addToCart = (req, res, next) => {
                 req.session.cart = [];
                 req.session.cart.push(
                     {
+                        product_image: data.product_image,
                         product_name: data.product_name,
                         product_slag: data.product_slag,
                         product_price: data.product_price,
-                        product_image: data.product_image,
                         qty:qty,
                     }
                 )
@@ -113,10 +123,10 @@ controller.addToCart = (req, res, next) => {
                 if(newItem){
                     req.session.cart.push(
                         {
+                            product_image: data.product_imaage,
                             product_name: data.product_name,
                             product_price: data.product_price,
                             product_slag: data.product_slag,
-                            product_image: data.product_imaage,
                             qty:qty,
                         }
                     )
@@ -132,8 +142,10 @@ controller.addToCart = (req, res, next) => {
 
 // View your cart controller
 controller.yourCart = (req, res, next) => {
+    req.session.current_url = req.url;
     let cart= req.session.cart;
     let totalAmount = 0;
+    let order = true;
     if(typeof cart == "undefined"){
         cart = [];
     }else{
@@ -143,15 +155,19 @@ controller.yourCart = (req, res, next) => {
             totalAmount+= cart[i].subtotal;
         }
     }
-    res.render("cart", {cart: cart, success: req.flash("success"), totalAmount: totalAmount});
+
+    if(totalAmount < 200){
+        order = false;
+    }
+    res.render("cart", {cart: cart, success: req.flash("success"), totalAmount: totalAmount, order:order});
 }
 
 // checkout controller
 controller.checkout = (req, res, next) => {
-    console.log(req.session.user)
+    req.session.current_url = req.url;
     addressModel.find({user_id: req.session.user._id}, (err, data) => {
-        if(!err) return res.render("checkout", {errors: req.flash("error"), list: data});
-        return res.render("checkout", {errors: req.flash("error"), list: err});
+        if(!err) return res.render("checkout", {errors: req.flash("error"), list: data, success: req.flash("success") });
+        return res.render("checkout", {errors: req.flash("error"), list: err, success: []});
     }).lean();
 }
 
@@ -186,12 +202,20 @@ controller.getCheckout = (req, res, next) => {
     body.cart = cart;
     body.user_id = req.session.passport.user;
     body.total_amount = totalAmount;
+
+    
+
     const orderData = new orderModel(body);
     orderData.save((err, data)=>{
         if(err){
             return console.log(err);
         }else{
+            const mobile = req.session.user.mobile;
+            const msg = "Hii "+req.session.user.name+" Your Order is Confirmed and Order Id is: "+ data._id+", Thanks for Choosing Purneashop.com.";
+            sms.sendSMS(mobile, msg, 'PUSHOP');
+
             delete req.session.cart;
+            
             req.flash("success", "Order Successfull");
             return res.redirect("/order");
         }
@@ -231,7 +255,9 @@ controller.updateCart = (req, res, next) => {
 
 controller.order = async (req, res, next) => {
     try{
+        
         const data = await orderModel.find({user_id: req.session.passport.user}).lean();
+        
         for(let i = 0; i < data.length; i++){
             let shippedDate = data[i].shipped_date == null? "Not Delevered Yet" : data[i].shipped_date.toDateString();
             data[i].order_date = data[i].order_date.toDateString();
@@ -247,13 +273,15 @@ controller.order = async (req, res, next) => {
             }
             data[i].order_status = status;
 
+            
+
             const address = await addressModel.findOne({_id: data[i].address}).lean();
             data[i].address = address.user_name+",("+address.address+","+address.landmark+","+address.pincode+")";
             data[i].name = address.user_name;
         }
         return res.render('order', { list: data, title: 'Online Grocery'});
     }catch(e){
-        
+        console.log("Order Page Error",e)
     }
         
     //     }else{

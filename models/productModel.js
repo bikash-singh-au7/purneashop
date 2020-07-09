@@ -15,7 +15,8 @@ const productSchema = new Schema({
     },
     product_slag: {
         type: String, 
-        required: true
+        required: true,
+        unique: true
     },
     product_image: {
         type: String
