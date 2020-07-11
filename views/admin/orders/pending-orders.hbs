@@ -82,7 +82,16 @@
                                                                     </tr>
 
                                                                     <tr>
-                                                                        <td colspan="5" align="right" class="text-info"> Address :{{item.address}} </td>
+                                                                        <td colspan="5" align="right" class="text-info"> Address :{{item.address.address}}, {{item.address.landmark}}, {{item.address.pincode}},
+                                                                            <a class="badge badge-info" href="tel:{{item.address.user_mobile}}"> {{item.address.user_mobile}} </a> </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="5" align="right" class="text-info"> Mobile No: 
+                                                                            <a class="badge badge-info" href="tel:{{item.user_mobile}}"> {{item.user_mobile}} </a> </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="5" align="right" class="text-info"> Order Id: {{item._id}}
+                                                                            </td>
                                                                     </tr>
                                                                 </table>
 

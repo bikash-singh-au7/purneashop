@@ -61,6 +61,9 @@ router.get("/shippedOrders", adminController.shippedOrders);
 router.get("/todayShippedOrders", adminController.todayShippedOrders);
 router.get("/orderDelevered/:order_id", adminController.orderDelevered);
 
+router.post("/getProduct", adminController.getProduct);
+router.put("/updateProduct", adminController.updateProduct);
+
 
 
 router.get("/test", (req, res)=>{

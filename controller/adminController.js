@@ -2,6 +2,7 @@
 const adminModel = require("../models/adminModel");
 const categoryModel = require("../models/categoryModel");
 const productModel = require("../models/productModel");
+const addressModel = require("../models/addressModel");
 const userModel = require("../models/userModel");
 const orderModel = require("../models/orderModel");
 const multer = require("multer");
@@ -12,6 +13,7 @@ require("../config/cloudinaryConfig");
 const cloudinary = require('cloudinary');
 var fs = require('fs');
 const { router } = require("../app");
+const mongoose = require("mongoose");
 
 const controller = {};
 
@@ -128,9 +130,14 @@ controller.pendingOrders = async (req, res, next) => {
     } else {
         for (let i = 0; i < pendingOrder.length; i++) {
             let user_id = pendingOrder[i].user_id;
+            let address_id = pendingOrder[i].address;
             try {
                 const users = await userModel.findOne({ _id: user_id });
                 pendingOrder[i].user_name = users.user_name;
+                pendingOrder[i].user_mobile = users.user_mobile;
+
+                const addrs = await addressModel.findOne({ _id: address_id}).lean();
+                pendingOrder[i].addrs = addrs;
             } catch (e) {
                 console.log(err);
             }
@@ -148,10 +155,10 @@ controller.pendingOrders = async (req, res, next) => {
                 qty: pendingOrder[i].qty,
                 order_date: pendingOrder[i].order_date.toDateString(),
                 order_status: status,
-                address: pendingOrder[i].address,
                 cart: pendingOrder[i].cart,
                 total_amount: pendingOrder[i].total_amount,
-                address: pendingOrder[i].address
+                address: pendingOrder[i].addrs,
+                user_mobile: pendingOrder[i].user_mobile
             });
         }
         return res.render("admin/orders/pending-orders", { layout: "backend", list: order, success: req.flash("success"), error: req.flash("error") });
@@ -186,10 +193,15 @@ controller.unshippedOrders = async (req, res, next) => {
     } else {
         for (let i = 0; i < unshippedOrders.length; i++) {
             let user_id = unshippedOrders[i].user_id;
+            let address_id = unshippedOrders[i].address;
             try {
                 const users = await userModel.findOne({ _id: user_id });
                 unshippedOrders[i].user_name = users.user_name;
-            } catch (e) {
+                unshippedOrders[i].user_mobile = users.user_mobile;
+
+                const addrs = await addressModel.findOne({ _id: address_id}).lean();
+                unshippedOrders[i].addrs = addrs;
+            } catch (err) {
                 console.log(err);
             }
             let status = "Pending";
@@ -206,10 +218,10 @@ controller.unshippedOrders = async (req, res, next) => {
                 qty: unshippedOrders[i].qty,
                 order_date: unshippedOrders[i].order_date.toDateString(),
                 order_status: status,
-                address: unshippedOrders[i].address,
                 cart: unshippedOrders[i].cart,
                 total_amount: unshippedOrders[i].total_amount,
-                address: unshippedOrders[i].address
+                address: unshippedOrders[i].addrs,
+                user_mobile: unshippedOrders[i].user_mobile,
             });
         }
         return res.render("admin/orders/confirmed-orders", { layout: "backend", list: order, success: req.flash("success"), error: req.flash("error") });
@@ -243,10 +255,16 @@ controller.shippedOrders = async (req, res, next) => {
     } else {
         for (let i = 0; i < shippedOrder.length; i++) {
             let user_id = shippedOrder[i].user_id;
+            let address_id = shippedOrder[i].address;
             try {
                 const users = await userModel.findOne({ _id: user_id });
                 shippedOrder[i].user_name = users.user_name;
-            } catch (e) {
+
+                shippedOrder[i].user_mobile = users.user_mobile;
+
+                const addrs = await addressModel.findOne({ _id: address_id}).lean();
+                shippedOrder[i].addrs = addrs;
+            } catch (err) {
                 console.log(err);
             }
             let status = "Pending";
@@ -264,10 +282,10 @@ controller.shippedOrders = async (req, res, next) => {
                 order_date: shippedOrder[i].order_date.toDateString(),
                 shipped_date: shippedOrder[i].shipped_date.toDateString(),
                 order_status: status,
-                address: shippedOrder[i].address,
                 cart: shippedOrder[i].cart,
                 total_amount: shippedOrder[i].total_amount,
-                address: shippedOrder[i].address
+                address: shippedOrder[i].addrs,
+                user_mobile: shippedOrder[i].user_mobile,
             });
         }
         return res.render("admin/orders/shipped-orders", { layout: "backend", list: order, success: req.flash("success"), error: req.flash("error") });
@@ -385,6 +403,13 @@ controller.getCategory = (req, res, next) => {
         else return res.send({ list: data });
     }).lean()
 }
+controller.getProduct = (req, res, next) => {
+    if (!req.session.user) return res.redirect("/admin");
+    productModel.findById({ _id: req.body.product_id }, (err, data) => {
+        if (!err) return res.send({ list: data });
+        else return res.send({ list: data });
+    }).lean()
+}
 controller.updateCategory = (req, res, next) => {
     if (!req.session.user) return res.redirect("/admin");
     if (req.body.category_name == "") {
@@ -418,6 +443,64 @@ controller.updateCategory = (req, res, next) => {
             }
         }
     }).lean()
+}
+
+controller.updateProduct = async (req, res, next) => {
+    if (!req.session.user) return res.redirect("/admin");
+    
+    req.checkBody("product_name", "Required Field").notEmpty().trim();
+    req.checkBody("product_id", "Required Field").notEmpty();
+    req.checkBody("product_desc", "Required Field").notEmpty();
+    req.checkBody("product_slag", "Required Field").notEmpty();
+    req.checkBody("product_price", "Required Field").notEmpty();
+    req.checkBody("product_mrp", "Required Field").notEmpty();
+    req.checkBody("product_status", "Required Field").notEmpty();
+    req.checkBody("product_category", "Required Field").notEmpty();
+    req.checkBody("product_stock", "Required Field").notEmpty();
+    req.checkBody("product_unit", "Required Field").notEmpty();
+    const errors = req.validationErrors();
+    if (errors) {
+        let errObj = {}
+        errors.forEach(element => {
+            errObj[element.param] = element.msg;
+        });
+        return res.send({status:0, list:errObj})
+    }
+    const body = req.body;
+    const product_id = body.product_id;
+    delete body.product_id;
+    const product_category = mongoose.Types.ObjectId(body.product_category);
+    try{
+        const category_info = await categoryModel.findOne({_id:product_category}).lean();
+        body.product_category = {
+            name: category_info.category_name,
+            _id: category_info._id
+        }
+        productModel.findByIdAndUpdate({_id: product_id}, body, (err, data)=>{
+            if(!err) {
+                let status = "Active";
+                if(data.product_status == 1){
+                    status = "<span class='badge badge-info'> Active </span>";
+                }else{
+                    status = "<span class='badge badge-danger'> Disable </span>";
+                }
+                const row = `
+                <td>${body.product_name}</td>
+                <td class="text-center">
+                    <span class="badge badge-info">${status}</span>
+                <td>${body.product_category.name}</td>
+                <td>${body.product_mrp}</td>
+                <td>${body.product_price}</td>
+                <td>${body.product_stock}</td>
+                <td>${body.product_unit}</td>
+                <td><button class="btn btn-info px-2 py-1" onclick="getId('${data._id}')"> <i class="fa fa-edit"></i> </button><button class="btn btn-danger px-2 py-1" onclick="deleteData('${data._id}')"> <i class="fa fa-trash"></i> </button></td>`;
+                return res.send({ updatedRow: row, rowId: "row-" + data._id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
+            }
+            else return res.send({status:0, title: "Oops Error", message: "Not Updated!", modal: "error" });
+        })
+    }catch(e){
+        return res.send({status:0, title: "Oops Error", message: "Not Updated!", modal: "error" });
+    }
 }
 
 controller.deleteCategory = (req, res, next) => {

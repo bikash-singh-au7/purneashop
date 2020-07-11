@@ -131,12 +131,19 @@
                         <div class="modal-body" id="updateModalBody">
                             <form action="" method="post" id="updateForm">
                                 <div class="form-group">
-                                    <label for="">product name <span class="text-danger">*</span></label>
+                                    <label for="">Product Name <span class="text-danger">*</span></label>
                                     <input type="text" name="product_name" class="form-control" value=""
                                         placeholder="product Name" id="update_product_name">
                                     <span class="text-danger" id="e_update_product_name"></span>
                                     <input type="hidden" name="product_id" class="form-control" value=""
                                         id="update_product_id">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Product Description <span class="text-danger">*</span></label>
+                                    <input type="text" name="product_desc" class="form-control" value=""
+                                        placeholder="product Desc" id="update_product_desc">
+                                    <span class="text-danger" id="e_update_product_desc"></span>
+                                    
                                 </div>
 
                                 <div class="form-group">
@@ -150,10 +157,56 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="">product_slag</label>
+                                    <label for="">Product Category <span class="text-danger">*</span></label>
+                                    <select name="product_category" class="form-control update_product_category"
+                                        id="update_product_category">
+                                        <option value="">Select Category</option>
+                                        {{#each cat}}
+                                            <option value="{{this._id}}"> {{this.category_name}} </option>
+                                        {{/each}}
+                                    </select>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="">Product Slag</label>
                                     <input type="text" name="product_slag" class="form-control" value=""
-                                        placeholder="product_slags Here" id="update_product_slag">
+                                        placeholder="Enter Slug" id="update_product_slag">
                                     <span class="text-danger" id="e_update_product_slag"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="">Product MRP</label>
+                                    <input type="text" name="product_mrp" class="form-control" value=""
+                                        placeholder="Enter MRP" id="update_product_mrp">
+                                    <span class="text-danger" id="e_update_product_mrp"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="">Product Price</label>
+                                    <input type="text" name="product_price" class="form-control" value=""
+                                        placeholder="Product Price" id="update_product_price">
+                                    <span class="text-danger" id="e_update_product_price"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="">Product Stock</label>
+                                    <input type="text" name="product_stock" class="form-control" value=""
+                                        placeholder="Enter Stock" id="update_product_stock">
+                                    <span class="text-danger" id="e_update_product_stock"></span>
+                                </div>
+                                 
+                                <div class="form-group">
+                                    <label for="">Product Unit</label>
+                                    <select name="product_unit" id="update_product_unit" class="form-control update_product_unit">
+                                        <option value="">Select Unit</option>
+                                        <option value="kg">kg</option>
+                                        <option value="liter">liter</option>
+                                        <option value="piece">piece</option>
+                                        <option value="pouch">pouch</option>
+                                        <option value="packet">packet</option>
+                                    </select>
+                                    <span class="text-danger" id="e_update_product_unit"></span>
                                 </div>
 
                             </form>
@@ -239,6 +292,8 @@
                                         <option value="kg">kg</option>
                                         <option value="liter">liter</option>
                                         <option value="piece">piece</option>
+                                        <option value="pouch">pouch</option>
+                                        <option value="packet">packet</option>
                                     </select>
                                     <span class="text-danger error" id="e_add_product_unit"></span>
                                 </div>
@@ -302,10 +357,8 @@
 
     //Get id for updating the data
     function getId(id) {
-        $("#e_update_product_name").html("");
-        $("#e_update_product_slag").html("");
         $.ajax({
-            url: '/admin/getproduct',
+            url: '/admin/getProduct',
             type: 'POST',
             data: { product_id: id },
             dataType: 'json',
@@ -321,8 +374,15 @@
             success: function (response) {
                 $("#update_product_id").val(response.list._id);
                 $("#update_product_name").val(response.list.product_name);
+                $("#update_product_desc").val(response.list.product_desc);
                 $("#update_product_slag").val(response.list.product_slag);
                 $(".update_product_status option[value=" + response.list.product_status + "]").attr('selected', 'selected');
+                $(".update_product_unit option[value=" + response.list.product_unit + "]").attr('selected', 'selected');
+                $(".update_product_category option[value=" + response.list.product_category._id + "]").attr('selected', 'selected');
+                $("#update_product_mrp").val(response.list.product_mrp);
+                $("#update_product_price").val(response.list.product_price);
+                $("#update_product_stock").val(response.list.product_stock);
+                
             }
         });
     }
@@ -377,8 +437,9 @@
         //update
         $("body").on("submit", "#updateForm", function (e) {
             e.preventDefault();
+            
             $.ajax({
-                url: '/admin/updateproduct',
+                url: '/admin/updateProduct',
                 type: 'PUT',
                 data: $(this).serialize(),
                 dataType: 'json',
@@ -392,13 +453,25 @@
                     if (response["status"] == 0) {
                         //set error message 
                         $("#e_update_product_name").html(response.list.product_name);
-                        $("#e_update_product_status").html(response.product_status);
-                        $("#e_update_product_slag").html(response.product_slag);
+                        $("#e_update_product_status").html(response.list.product_status);
+                        $("#e_update_product_slag").html(response.list.product_slag);
+                        $("#e_update_product_desc").html(response.list.product_desc);
+                        $("#e_update_product_mrp").html(response.list.product_mrp);
+                        $("#e_update_product_price").html(response.list.product_price);
+                        $("#e_update_product_stock").html(response.list.product_stock);
+                        $("#e_update_product_unit").html(response.list.product_unit);
+                        $("#e_update_product_category").html(response.list.product_category);
                     } else {
                         //set blank value for error message
                         $("#e_update_product_name").html("");
                         $("#e_update_product_status").html("");
                         $("#e_update_product_slag").html("");
+                        $("#e_update_product_desc").html("");
+                        $("#e_update_product_mrp").html("");
+                        $("#e_update_product_price").html("");
+                        $("#e_update_product_stock").html("");
+                        $("#e_update_product_unit").html("");
+                        $("#e_update_product_category").html("");
 
                         //set message for alert box
                         $("#updateModal").modal("hide");
