@@ -67,7 +67,7 @@ controller.checkUserIsRegistered = (req, res) => {
             } else if (!data) {
                 return res.send({ status: 0, message: "This Mobile Number is Not Registered" });
             } else {
-                                
+
                 //Authentication Key 
                 var authkey = '224991AuVykO8pSsz5b4313bf';
 
@@ -75,7 +75,7 @@ controller.checkUserIsRegistered = (req, res) => {
                 var number = mobile;
 
                 //message
-                let otp = Math.floor(Math.random() * (9999 - 1000) ) + 1000;
+                let otp = Math.floor(Math.random() * (9999 - 1000)) + 1000;
                 var message = 'Your OTP is ' + otp + ' Team www.purneashop.com. Ab Onine Karega Purnea';
 
                 //Sender ID
@@ -92,19 +92,19 @@ controller.checkUserIsRegistered = (req, res) => {
                 // }
                 msg91.sendOne(authkey, number, message, senderid, route, dialcode, function (response) {
                     //Returns Message ID, If Sent Successfully or the appropriate Error Message
-                    if(/^[a-zA-Z0-9]{24}$/g.test(response)){
+                    if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
                         // req.flash({success:"OTP Send Successfuy !"});
                         req.session.forgotPassword = {
                             mobile: mobile,
                             otp: otp,
                             _id: data._id
                         };
-                        return res.send({status: 1, success: "OTP Send Successfuy !"});
+                        return res.send({ status: 1, success: "OTP Send Successfuy !" });
                         // console.log(response, "send");
-                    }else{
-                        return res.send({status: 0, message: "Some Error Occured While Sending OTP Please Support to Us."})
+                    } else {
+                        return res.send({ status: 0, message: "Some Error Occured While Sending OTP Please Support to Us." })
                     }
-                    
+
                 });
             }
         });
@@ -113,35 +113,35 @@ controller.checkUserIsRegistered = (req, res) => {
     }
 }
 
-controller.verifyForgotOtp = async (req, res)=>{
+controller.verifyForgotOtp = async (req, res) => {
     const form_otp = req.body.otp;
     const gen_otp = req.session.forgotPassword.otp;
-    if(form_otp == gen_otp){
-        return res.send({status:1, message: 'Otp Verified', csrfToken: req.csrfToken(),});
-    }else{
-        return res.send({status:0, message: 'You Entered Wrong OTP, Plese Enter Correct OTP'});
+    if (form_otp == gen_otp) {
+        return res.send({ status: 1, message: 'Otp Verified', csrfToken: req.csrfToken(), });
+    } else {
+        return res.send({ status: 0, message: 'You Entered Wrong OTP, Plese Enter Correct OTP' });
     }
 }
 
-controller.createPasswordForm = async (req, res)=>{
+controller.createPasswordForm = async (req, res) => {
     const gen_otp = req.session.forgotPassword;
-    if(gen_otp === undefined){
+    if (gen_otp === undefined) {
         return res.redirect("/users/forgotPassword");
-    }else{
+    } else {
         const categoryData = await categoryModel.find({ category_status: 1 }).lean();
         return res.render("users/forgot-password/create-password", { csrfToken: req.csrfToken(), catList: categoryData });
     }
-    
-    
+
+
 
 }
 
-controller.createPassword = async (req, res)=>{
+controller.createPassword = async (req, res) => {
     const new_password = req.body.new_password;
     const confirm_password = req.body.confirm_password;
     req.checkBody("new_password", "Required Field").notEmpty();
     req.checkBody("confirm_password", "Required Field").notEmpty();
-    req.checkBody('confirm_password','Passwords do not match.').equals(new_password);
+    req.checkBody('confirm_password', 'Passwords do not match.').equals(new_password);
 
     const errors = req.validationErrors();
     if (errors) {
@@ -151,14 +151,14 @@ controller.createPassword = async (req, res)=>{
             obj[element.param] = req.body[element.param];
         });
         console.log(obj)
-        return res.send({status:0, message:obj, data: req.body});
+        return res.send({ status: 0, message: obj, data: req.body });
     }
     const gen_otp = req.session.forgotPassword;
     const userData = new userModel();
     const user_password = userData.encryptPassword(req.body.confirm_password);
-    userModel.findByIdAndUpdate({_id: gen_otp._id}, {user_password: user_password}, (err, data)=>{
-        if(!err) return res.send({status:1, message:"Password Changed Successfully"});
-        else return res.send({status:0, message:"Some Error Occured"});
+    userModel.findByIdAndUpdate({ _id: gen_otp._id }, { user_password: user_password }, (err, data) => {
+        if (!err) return res.send({ status: 1, message: "Password Changed Successfully" });
+        else return res.send({ status: 0, message: "Some Error Occured" });
     })
 
 
@@ -211,27 +211,29 @@ controller.getAddAddress = (req, res, next) => {
         return res.redirect("/users/addAddress");
     }
 
-    if (body.pincode != "854301" || body.pincode != "854302" || body.pincode != "854303" || body.pincode != "854304") {
+    if (body.pincode == "854301" || body.pincode == "854302" || body.pincode == "854303" || body.pincode == "854304" || body.pincode == "854301") {
+        const addressData = new addressModel(body);
+        addressData.save((err, data) => {
+            let url = '/users/address';
+            if (!err) {
+                req.flash("success", "Address Added uccessfully");
+
+                if (req.session.current_url == "/checkout") {
+                    url = "/checkout";
+                } else {
+                    url = "/users/address";
+                }
+                return res.redirect(url);
+            }
+            req.flash("error", "Oops Error Occured!!");
+            return res.redirect(url);
+        })
+    } else {
         req.flash("message", { pincode_error: "Order is not accepting to this pin code" });
         req.flash("data", body);
         return res.redirect("/users/addAddress");
     }
-    const addressData = new addressModel(body);
-    addressData.save((err, data) => {
-        let url = '/users/address';
-        if (!err) {
-            req.flash("success", "Address Added uccessfully");
 
-            if (req.session.current_url == "/checkout") {
-                url = "/checkout";
-            } else {
-                url = "/users/address";
-            }
-            return res.redirect(url);
-        }
-        req.flash("error", "Oops Error Occured!!");
-        return res.redirect(url);
-    })
 
 }
 

@@ -16,11 +16,6 @@ controller.index = async (req, res, next) => {
     // Getting Product
     const productData = await productModel.find({ product_status: 1 }).limit(4).lean();
 
-    // Getting All Category
-    const categoryData = await categoryModel.find({ category_status: 1 }).lean();
-    let categoryWise = {};
-    let p = [];
-
     // Add Discount Properties
     for (let x in productData) {
         const mrp = productData[x].product_mrp;
@@ -29,10 +24,19 @@ controller.index = async (req, res, next) => {
         productData[x].discount = per + "%";
     }
 
+
+    // Getting All Category
+    const categoryData = await categoryModel.find({ category_status: 1 }).lean();
+    const cloneCategory = Array.from(categoryData);
+    const arr = cloneCategory.slice(0, 11);
+    let categoryWise = {};
+    let p = [];
+
+
     // Getting Data Category Wise
-    for (let x in categoryData) {
+    for (let x in arr) {
         p = await productModel.find({ "product_category._id": categoryData[x]._id, product_status: 1 }).limit(4).lean();
-        categoryWise[categoryData[x].category_name] = p;
+        categoryWise[arr[x].category_name] = p;
     }
 
     // Adding discount property
@@ -156,7 +160,7 @@ controller.yourCart = (req, res, next) => {
         }
     }
 
-    if (totalAmount < 200) {
+    if (totalAmount < 300) {
         order = false;
     }
     res.render("cart", { cart: cart, success: req.flash("success"), totalAmount: totalAmount, order: order });
@@ -210,9 +214,9 @@ controller.getCheckout = (req, res, next) => {
         if (err) {
             return console.log(err);
         } else {
+
+
             const mobile = req.session.user.mobile;
-            const msg = "Hii " + req.session.user.name + " Your Order is Confirmed and Order Id is: " + data._id + ", Thanks for Choosing Purneashop.com.";
-            
             //Authentication Key 
             var authkey = '224991AuVykO8pSsz5b4313bf';
 
@@ -220,7 +224,7 @@ controller.getCheckout = (req, res, next) => {
             var number = mobile;
 
             //message
-            var message = msg;
+            const msg = "Hii " + req.session.user.name + " Your Order is Confirmed and Order Id is: " + data._id + ", Thanks for Choosing www.purneashop.com.";
 
             //Sender ID
             var senderid = 'PUSHOP';
@@ -230,19 +234,24 @@ controller.getCheckout = (req, res, next) => {
 
             //Country dial code
             var dialcode = '91';
-
-
             //send to single number
             // if (!user_info === undefined) {
 
             // }
-            msg91.sendOne(authkey, number, message, senderid, route, dialcode, function (response) {
+            msg91.sendOne(authkey, number, msg, senderid, route, dialcode, function (response) {
                 //Returns Message ID, If Sent Successfully or the appropriate Error Message
+                if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
+                    // req.flash({success:"OTP Send Successfuy !"});
+                    console.log(response);
+                    delete req.session.cart;
+                    req.flash("success", "Order Successfull Competed, Check Your Inbox.");
+                    return res.redirect("/order");
+                    // console.log(response, "send");
+                } else {
+                    req.flash("success", "Order Successfull Competed");
+                    return res.redirect("/order");
+                }
 
-                console.log(response);
-                delete req.session.cart;
-                req.flash("success", "Order Successfull");
-                return res.redirect("/order");
             });
         }
     })
@@ -305,9 +314,10 @@ controller.order = async (req, res, next) => {
             data[i].address = address.user_name + ",(" + address.address + "," + address.landmark + "," + address.pincode + ")";
             data[i].name = address.user_name;
         }
-        return res.render('order', { list: data, title: 'Online Grocery' });
+        return res.render('order', { list: data, title: 'Online Grocery', message: req.flash("success") });
     } catch (e) {
         console.log("Order Page Error", e)
+        return res.render('order', { list: [], title: 'Online Grocery', error: "Oops Error Occured" });
     }
 
     //     }else{
@@ -352,7 +362,7 @@ controller.order = async (req, res, next) => {
 // search controller
 controller.search = (req, res, next) => {
     let query = req.body.search_query;
-    productModel.find({ product_name: { $regex: new RegExp(query, "i") } }, (err, data) => {
+    productModel.find({ product_name: { $regex: new RegExp(query, "i") }, product_status: 1 }, (err, data) => {
         if (err) return res.send({ list: "Oops Error!!" });
         if (data.length == 0) return res.send({ list: "No Item Available", isData: false })
         return res.send({ list: data, isData: true });

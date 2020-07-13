@@ -1,3 +1,4 @@
+<div class="headerContainer">
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
 
@@ -73,18 +74,20 @@
             </div>
         </div>
         <div class="row" id="searchedItem">
-            <div class="col-md-12">
-                <div class="text-center">
-                    <img id="searchLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
-                </div>
-                <div id="itemContainer" class="shadow-sm bg-white px-0 rounded">
-
+            <div class="col-md-12" >
+                <div class="shadow-sm bg-white px-0 rounded">
+                    <div id="itemContainer">
+                    
+                    </div>
+                    <div class="text-center">
+                        <img id="searchLoader" style="display: none;" src="/images/loader/ajax-loader.gif" alt="">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+</div>
 
 <script>
     $(document).ready(function () {
@@ -112,17 +115,17 @@
                     if (response["isData"]) {
                         let html = "";
                         for (let i = 0; i < response["list"].length; i++) {
-                            html = html + "<div class='p-2'> <a href='/products/" + response["list"][i].product_slag + "'>" + response["list"][i].product_name + "</a></div>";
+                            html = html + "<div class='p-2 border-bottom'> <a href='/products/" + response["list"][i].product_slag + "'>" + response["list"][i].product_name + "</a> <a class='text-info float-right'> <i class='fa fa-inr'></i> "+response["list"][i].product_price+"  </a> </div>";
                         }
                         $("#itemContainer").html(html);
                     } else {
-                        let html = "<div class='p-2 text-muted'> " + response["list"] + "</div>";
+                        let html = "<div class='p-2 text-muted border-bottom text-center'> <a class='text-danger'> " + response["list"] + " </a> </div>";
                         $("#itemContainer").html(html);
                     }
                 }
             });
         } else {
-            $("#itemContainer").html()
+            $("#itemContainer").html('');
         }
 
     })
