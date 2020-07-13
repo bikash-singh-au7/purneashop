@@ -16,6 +16,14 @@ router.get('/addAddress', isLoggedIn, userController.addAddress);
 router.post('/getAddAddress', isLoggedIn, userController.getAddAddress);
 router.get('/deleteAddress', isLoggedIn, userController.deleteAddress);
 router.get('/logout', isLoggedIn, userController.logout);
+
+// Password Reset
+router.get('/forgotPassword', userController.forgotPassword);
+router.post('/checkUserIsRegistered', userController.checkUserIsRegistered);
+router.post('/verifyForgotOtp', userController.verifyForgotOtp);
+router.get('/createPasswordForm', userController.createPasswordForm);
+router.post('/createPassword', userController.createPassword);
+
 router.get("/sms", (req, res) => {
   //Authentication Key 
   var authkey = '224991AuVykO8pSsz5b4313bf';

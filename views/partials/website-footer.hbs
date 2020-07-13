@@ -3,10 +3,11 @@
         <div class="col-md-4 mb-4">
             <h1 class="text-white heading h6">About Us</h1>
             <p class="content text-white px-2">
-                Purneashop.com is a Shopping Site that focus mainly to the purnea area. If you are from Purnea, you can purchase all grocery items at cheepest price with fast delevery (within some hours). 
+                Purneashop.com is a Shopping Site that focus mainly to the purnea areas. If you are from Purnea, you can
+                purchase all grocery items at cheepest price with fast delivery (within some hours).
             </p>
             <p class="content text-white px-2">
-                Stay Home Stay Safe 
+                Stay Home Stay Safe
             </p>
         </div>
 
@@ -14,13 +15,13 @@
             <h1 class="text-white heading h6">Category</h1>
             <ul class="list-group px-0">
                 {{#each catList as |cat|}}
-                    <li class="list-group-item bg-none m-0 py-0 px-2">
-                        <a href="/category/{{this._id}}" class="mb-1">
-                            <span class="content text-white"><i class="fa fa-angle-down"></i> {{this.category_name}}</span>
-                        </a>
-                    </li>
+                <li class="list-group-item bg-none m-0 py-0 px-2">
+                    <a href="/category/{{this._id}}" class="mb-1">
+                        <span class="content text-white"><i class="fa fa-angle-down"></i> {{this.category_name}}</span>
+                    </a>
+                </li>
                 {{/each}}
-                
+
             </ul>
         </div>
 
@@ -40,6 +41,12 @@
                     </div>
                 </li>
                 <li class="list-group-item bg-none m-0 py-1 px-1">
+                    <div class="h6 sub-heading text-white"> <i class="fa fa-whatsapp"></i> Whats App</div>
+                    <div class="content text-white m-2">
+                        <a href="whatsapp://send?abid=9472847179&text=Hello%2C%20www.purneashop.com!">+91-9472847179</a>
+                    </div>
+                </li>
+                <li class="list-group-item bg-none m-0 py-1 px-1">
                     <div class="h6 sub-heading text-white"> <i class="fa fa-envelope"></i> Email</div>
                     <div class="content text-white m-2">
                         <a href="mailto:purneashop@gmail.com">purneashop@gmail.com</a>
@@ -48,9 +55,11 @@
             </ul>
         </div>
     </div>
-    
+
     <div class="row">
-        <div class="col-md-12"><hr></div>
+        <div class="col-md-12">
+            <hr>
+        </div>
         <div class="col-md-6">
             <div class="social-icon">
                 <a href="" class="btn btn-light"> <i class="fa fa-facebook"></i> </a>
@@ -62,4 +71,28 @@
             <p class="content text-light my-2">@ PurneaShop.com 2020 All Rights Reserved</p>
         </div>
     </div>
+
+    <!-- child of the body tag -->
+    <span id="top-link-block" class="hidden">
+        <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
+            <i class="fa fa-angle-up px-1 py-1"></i> 
+        </a>
+    </span><!-- /top-link-block -->
+
+    <span id="whatsapp-icon" class="hidden">
+        <a href="whatsapp://send?abid=9472847179&text=Hello%2C%20www.purneashop.com!">
+            <i class="fa fa-whatsapp px-1 py-1"></i> 
+        </a>
+    </span><!-- /top-link-block -->
 </div>
+
+<script>
+    // Only enable if the document has a long scroll bar
+    // Note the window height + offset
+    if (($(window).height() + 100) < $(document).height()) {
+        $('#top-link-block').removeClass('hidden').affix({
+            // how far to scroll down before link "slides" into view
+            offset: { top: 100 }
+        });
+    }
+</script>

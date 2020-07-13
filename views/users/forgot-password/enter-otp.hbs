@@ -1,0 +1,64 @@
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-5 mx-auto py-3 px-5">
+            
+            <div class="shadow-sm bordered m-0 bg-white">
+                <h5 class="text-info text-center p-2 m-0"> <i class="fa fa-unlock"></i> OTP Verification ! </h5>
+                {{#if hasError}}
+                    {{#each message}}
+                        <div class="alert alert-danger">
+                            {{this}}
+                        </div>
+                    {{/each}}
+                {{/if}}
+
+                <div class="alert alert-success">{{success}}</div>
+                <form id="OTPForm" class="p-3">
+                    <div class="form-group">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}" class="form-control">    
+                    </div>
+                    <div class="form-group">
+                        <label for="">Enter OTP</label>
+                        <input type="text" class="form-control" name="otp" placeholder="Enter OTP">
+                        <span class="error" id="otp_error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info">Verify OTP
+                            <img id="OTPLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("body").on("submit", "#OTPForm", function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/users/checkUserIsRegistered',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            beforeSend: function () {
+                $("#OTPLoader").show();
+            },
+            complete: function () {
+                $("#OTPLoader").hide();
+            },
+            success: function (response) {
+                if (response["status"] == 0) {
+                    //set error message 
+                    $("#user_mobile_error").html(response.message);
+                    $("#otp_success").html('');
+                } else {
+                    $("#user_mobile_error").html('');
+                    $("#otp_success").html(response.message);
+                }
+            }
+        });
+    });
+</script>

@@ -1,6 +1,7 @@
 // import
 const userModel = require("../models/userModel");
 const addressModel = require("../models/addressModel");
+const categoryModel = require("../models/categoryModel")
 const { router } = require("../app");
 const msg91 = require('msg91-sms');
 
@@ -47,6 +48,122 @@ controller.getSignup = (req, res, next) => {
     });
 }
 
+// create forget password controller
+controller.forgotPassword = async (req, res, next) => {
+    const message = req.flash("error");
+    const categoryData = await categoryModel.find({ category_status: 1 }).lean();
+    res.render("users/forgot-password/forgot-password", { csrfToken: req.csrfToken(), catList: categoryData });
+}
+
+controller.checkUserIsRegistered = (req, res) => {
+    const mobile = req.body.user_mobile;
+    const regX = /^[0]?[789]\d{9}$/;
+    if (mobile == "") {
+        return res.send({ status: 0, message: "Please Enter Mobile Number" });
+    } else if (regX.test(mobile)) {
+        userModel.findOne({ user_mobile: mobile }, (err, data) => {
+            if (err) {
+                return res.send({ status: 0, message: "Oops Some Error Occured !!" });
+            } else if (!data) {
+                return res.send({ status: 0, message: "This Mobile Number is Not Registered" });
+            } else {
+                                
+                //Authentication Key 
+                var authkey = '224991AuVykO8pSsz5b4313bf';
+
+                //for single number
+                var number = mobile;
+
+                //message
+                let otp = Math.floor(Math.random() * (9999 - 1000) ) + 1000;
+                var message = 'Your OTP is ' + otp + ' Team www.purneashop.com. Ab Onine Karega Purnea';
+
+                //Sender ID
+                var senderid = 'PUSHOP';
+
+                //Route
+                var route = '4';
+
+                //Country dial code
+                var dialcode = '91';
+                //send to single number
+                // if (!user_info === undefined) {
+
+                // }
+                msg91.sendOne(authkey, number, message, senderid, route, dialcode, function (response) {
+                    //Returns Message ID, If Sent Successfully or the appropriate Error Message
+                    if(/^[a-zA-Z0-9]{24}$/g.test(response)){
+                        // req.flash({success:"OTP Send Successfuy !"});
+                        req.session.forgotPassword = {
+                            mobile: mobile,
+                            otp: otp,
+                            _id: data._id
+                        };
+                        return res.send({status: 1, success: "OTP Send Successfuy !"});
+                        // console.log(response, "send");
+                    }else{
+                        return res.send({status: 0, message: "Some Error Occured While Sending OTP Please Support to Us."})
+                    }
+                    
+                });
+            }
+        });
+    } else {
+        return res.send({ status: 0, message: "Please Enter Valid Mobile Number" });
+    }
+}
+
+controller.verifyForgotOtp = async (req, res)=>{
+    const form_otp = req.body.otp;
+    const gen_otp = req.session.forgotPassword.otp;
+    if(form_otp == gen_otp){
+        return res.send({status:1, message: 'Otp Verified', csrfToken: req.csrfToken(),});
+    }else{
+        return res.send({status:0, message: 'You Entered Wrong OTP, Plese Enter Correct OTP'});
+    }
+}
+
+controller.createPasswordForm = async (req, res)=>{
+    const gen_otp = req.session.forgotPassword;
+    if(gen_otp === undefined){
+        return res.redirect("/users/forgotPassword");
+    }else{
+        const categoryData = await categoryModel.find({ category_status: 1 }).lean();
+        return res.render("users/forgot-password/create-password", { csrfToken: req.csrfToken(), catList: categoryData });
+    }
+    
+    
+
+}
+
+controller.createPassword = async (req, res)=>{
+    const new_password = req.body.new_password;
+    const confirm_password = req.body.confirm_password;
+    req.checkBody("new_password", "Required Field").notEmpty();
+    req.checkBody("confirm_password", "Required Field").notEmpty();
+    req.checkBody('confirm_password','Passwords do not match.').equals(new_password);
+
+    const errors = req.validationErrors();
+    if (errors) {
+        let obj = {};
+        errors.forEach(element => {
+            obj[element.param + "_error"] = element.msg;
+            obj[element.param] = req.body[element.param];
+        });
+        console.log(obj)
+        return res.send({status:0, message:obj, data: req.body});
+    }
+    const gen_otp = req.session.forgotPassword;
+    const userData = new userModel();
+    const user_password = userData.encryptPassword(req.body.confirm_password);
+    userModel.findByIdAndUpdate({_id: gen_otp._id}, {user_password: user_password}, (err, data)=>{
+        if(!err) return res.send({status:1, message:"Password Changed Successfully"});
+        else return res.send({status:0, message:"Some Error Occured"});
+    })
+
+
+}
+
 // address controller
 controller.address = (req, res, next) => {
     req.session.current_url = req.url;
@@ -60,7 +177,7 @@ controller.address = (req, res, next) => {
 
 // address controller
 controller.addAddress = (req, res, next) => {
-    
+
     const error = req.flash("error");
     const success = req.flash("success");
 
@@ -94,7 +211,7 @@ controller.getAddAddress = (req, res, next) => {
         return res.redirect("/users/addAddress");
     }
 
-    if (body.pincode != "854301") {
+    if (body.pincode != "854301" || body.pincode != "854302" || body.pincode != "854303" || body.pincode != "854304") {
         req.flash("message", { pincode_error: "Order is not accepting to this pin code" });
         req.flash("data", body);
         return res.redirect("/users/addAddress");
@@ -104,10 +221,10 @@ controller.getAddAddress = (req, res, next) => {
         let url = '/users/address';
         if (!err) {
             req.flash("success", "Address Added uccessfully");
-            
-            if(req.session.current_url == "/checkout"){
+
+            if (req.session.current_url == "/checkout") {
                 url = "/checkout";
-            }else{
+            } else {
                 url = "/users/address";
             }
             return res.redirect(url);
@@ -161,11 +278,11 @@ controller.enterOTP = (req, res, next) => {
 
     //send to single number
     // if (!user_info === undefined) {
-        
+
     // }
     msg91.sendOne(authkey, number, message, senderid, route, dialcode, function (response) {
         //Returns Message ID, If Sent Successfully or the appropriate Error Message
-        
+
         console.log(response);
         req.session.passport = {};
         return res.render("users/enter-otp", { csrfToken: req.csrfToken(), isSuccess: true, success_msg: "OTP Send Successfully." });

@@ -59,6 +59,9 @@ a:focus {
     padding: 5px 5px;
     background: #053B44;
     border: none;
+    position: sticky;
+    top: 0;
+    z-index: 5;
     border-radius: 0;
     /* margin-bottom: 40px; */
     margin-bottom: 0px;
@@ -249,4 +252,25 @@ a{
     color:rgb(150, 12, 12);
     font-size: 14px;
     font-weight: 900;
+}
+
+#top-link-block{
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    background: #053B44;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+    border-radius: 100%;
+}
+
+#whatsapp-icon{
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
+    z-index: 99;
+    background: #053B44;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+    border-radius: 100%;
 }
