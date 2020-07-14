@@ -55,15 +55,17 @@ router.get("/users", adminController.users);
 //================Orders Routes============
 // Pending Orders
 router.get("/pendingOrders", adminController.pendingOrders);
-router.get("/orderConfirm/:order_id", adminController.orderConfirm);
+router.put("/orderConfirm", adminController.orderConfirm);
 router.get("/unshippedOrders", adminController.unshippedOrders);
 router.get("/shippedOrders", adminController.shippedOrders);
 router.get("/todayShippedOrders", adminController.todayShippedOrders);
-router.get("/orderDelevered/:order_id", adminController.orderDelevered);
+router.put("/orderDelevered", adminController.orderDelevered);
 
 router.post("/getProduct", adminController.getProduct);
 router.put("/updateProduct", adminController.updateProduct);
 
+// Delete Order
+router.delete("/orderDelete", adminController.orderDelete);
 
 
 router.get("/test", (req, res)=>{

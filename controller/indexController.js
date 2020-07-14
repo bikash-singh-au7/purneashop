@@ -127,7 +127,7 @@ controller.addToCart = (req, res, next) => {
                 if (newItem) {
                     req.session.cart.push(
                         {
-                            product_image: data.product_imaage,
+                            product_image: data.product_image,
                             product_name: data.product_name,
                             product_price: data.product_price,
                             product_slag: data.product_slag,
@@ -155,8 +155,8 @@ controller.yourCart = (req, res, next) => {
     } else {
 
         for (let i = 0; i < cart.length; i++) {
-            cart[i].subtotal = cart[i].product_price * cart[i].qty;
-            totalAmount += cart[i].subtotal;
+            cart[i].subtotal = (cart[i].product_price * cart[i].qty).toFixed(2);
+            totalAmount += Number(cart[i].subtotal);
         }
     }
 
@@ -197,8 +197,8 @@ controller.getCheckout = (req, res, next) => {
     } else {
 
         for (let i = 0; i < cart.length; i++) {
-            cart[i].subtotal = cart[i].product_price * cart[i].qty;
-            totalAmount += cart[i].subtotal;
+            cart[i].subtotal = (cart[i].product_price * cart[i].qty).toFixed(2);
+            totalAmount += Number(cart[i].subtotal);
         }
     }
 
@@ -214,9 +214,9 @@ controller.getCheckout = (req, res, next) => {
         if (err) {
             return console.log(err);
         } else {
-
-
             const mobile = req.session.user.mobile;
+
+            console.log(mobile, "mono");
             //Authentication Key 
             var authkey = '224991AuVykO8pSsz5b4313bf';
 
@@ -242,7 +242,8 @@ controller.getCheckout = (req, res, next) => {
                 //Returns Message ID, If Sent Successfully or the appropriate Error Message
                 if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
                     // req.flash({success:"OTP Send Successfuy !"});
-                    console.log(response);
+                    console.log("mobile",number, "sms", response);
+                    
                     delete req.session.cart;
                     req.flash("success", "Order Successfull Competed, Check Your Inbox.");
                     return res.redirect("/order");
@@ -290,17 +291,16 @@ controller.updateCart = (req, res, next) => {
 
 controller.order = async (req, res, next) => {
     try {
-
-        const data = await orderModel.find({ user_id: req.session.passport.user }).lean();
+        const data = await orderModel.find({ user_id: req.session.passport.user }).lean().sort({order_date:-1});
 
         for (let i = 0; i < data.length; i++) {
             let shippedDate = data[i].shipped_date == null ? "Not Delevered Yet" : data[i].shipped_date.toDateString();
             data[i].order_date = data[i].order_date.toDateString();
             data[i].shipped_date = shippedDate;
             data[i].sn = i + 1;
-            let status = "Confirm";
+            let status = "Pending";
             if (data[i].order_status == 1) {
-                status = "Dispatched";
+                status = "Confirm";
             } else if (data[i].order_status == 2) {
                 status = "Delevered";
             } else if (data[i].order_status == 3) {
@@ -317,46 +317,10 @@ controller.order = async (req, res, next) => {
         return res.render('order', { list: data, title: 'Online Grocery', message: req.flash("success") });
     } catch (e) {
         console.log("Order Page Error", e)
-        return res.render('order', { list: [], title: 'Online Grocery', error: "Oops Error Occured" });
+        return res.render('order', { list: [], title: 'Online Grocery', message: ["Oops Error Occured"] });
     }
 
-    //     }else{
-    //         return res.render('order', { list: {}, title: 'Online Grocery' });
-    //     } 
-    // }).lean();
-
 }
-
-// create order controller
-// controller.order = (req, res, next) => {
-//     orderModel.find({user_id: req.session.passport.user},(err, data) => {
-//         if (!err) {
-//             for(let i = 0; i < data.length; i++){
-//                 let shippedDate = data[i].shipped_date == null? "Not Delevered Yet" : data[i].shipped_date.toDateString();
-//                 data[i].order_date = data[i].order_date.toDateString();
-//                 data[i].shipped_date = shippedDate;
-//                 data[i].sn = i+1;
-//                 let status = "Confirm";
-//                 if(data[i].order_status == 1) {
-//                     status = "Dispatched";
-//                 }else if(data[i].order_status == 2){
-//                     status = "Delevered";
-//                 }else if(data[i].order_status == 3){
-//                     status = "Canceled";
-//                 }
-//                 data[i].order_status = status;
-//             }
-//             addressModel.findOne({_id: })
-
-
-
-//             return res.render('order', { list: data, title: 'Online Grocery'});
-//         }else{
-//             return res.render('order', { list: {}, title: 'Online Grocery' });
-//         } 
-//     }).lean();
-
-// }
 
 
 // search controller

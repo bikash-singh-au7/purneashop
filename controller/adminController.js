@@ -14,6 +14,7 @@ const cloudinary = require('cloudinary');
 var fs = require('fs');
 const { router } = require("../app");
 const mongoose = require("mongoose");
+const msg91 = require("msg91-sms");
 
 const controller = {};
 
@@ -121,9 +122,9 @@ controller.pendingOrders = async (req, res, next) => {
     let pendingOrder = [];
     let order = [];
     try {
-        pendingOrder = await orderModel.find({ order_status: 0 });
+        pendingOrder = await orderModel.find({ order_status: 0 }).sort({ order_date: -1 });
     } catch (e) {
-        console.log(err);
+        console.log(e);
     }
     if (pendingOrder.length == 0) {
         return res.render("admin/orders/pending-orders", { layout: "backend", list: pendingOrder, success: req.flash("success"), error: req.flash("error") });
@@ -136,10 +137,10 @@ controller.pendingOrders = async (req, res, next) => {
                 pendingOrder[i].user_name = users.user_name;
                 pendingOrder[i].user_mobile = users.user_mobile;
 
-                const addrs = await addressModel.findOne({ _id: address_id}).lean();
+                const addrs = await addressModel.findOne({ _id: address_id }).lean();
                 pendingOrder[i].addrs = addrs;
             } catch (e) {
-                console.log(err);
+                console.log(e);
             }
             let status = "Pending";
             if (pendingOrder[i].order_status == 1) {
@@ -167,14 +168,49 @@ controller.pendingOrders = async (req, res, next) => {
 
 controller.orderConfirm = (req, res, next) => {
     if (!req.session.user) return res.redirect("/admin");
-    const order_id = req.params.order_id;
-    orderModel.findByIdAndUpdate({ _id: order_id }, { order_status: 1 }, (err, data) => {
+    const order_id = req.body.order_id;
+    orderModel.findByIdAndUpdate({ _id: order_id }, { order_status: 1, shipped_date: new Date() }, (err, data) => {
         if (!err) {
-            req.flash("success", "Order Updated");
-            return res.redirect("back");
+            userModel.findOne({ _id: data.user_id }, (e, user) => {
+                if (!e) {
+                    //Authentication Key 
+                    var authkey = '224991AuVykO8pSsz5b4313bf';
+
+                    //for single number
+                    var number = user.user_mobile;;
+
+                    //message
+                    const msg = "Hii " + user.user_name + " Your Order is Confirmed order Id is: " + data._id + ", We Will Delivered Soon. Thanks for Choosing www.purneashop.com. Team PurneaShop.";
+
+                    //Sender ID
+                    var senderid = 'PUSHOP';
+
+                    //Route
+                    var route = '4';
+
+                    //Country dial code
+                    var dialcode = '91';
+                    //send to single number
+                    // if (!user_info === undefined) {
+
+                    // }
+                    msg91.sendOne(authkey, number, msg, senderid, route, dialcode, function (response) {
+                        //Returns Message ID, If Sent Successfully or the appropriate Error Message
+                        if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
+                            // req.flash({success:"OTP Send Successfuy !"});
+                            console.log("mobile", number, "sms", response);
+                            return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
+                        } else {
+                            return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
+                        }
+
+                    });
+                } else {
+                    return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Data Updated Successfully But Message Not Send!", modal: "success" });
+                }
+            })
         } else {
-            req.flash("error", "Oops Error!! Try agail later.");
-            return res.redirect("back");
+            return res.send({ status: 0, title: "Oops Error", message: "Data Does Not Updated", modal: "error" });
         }
     })
 }
@@ -199,7 +235,7 @@ controller.unshippedOrders = async (req, res, next) => {
                 unshippedOrders[i].user_name = users.user_name;
                 unshippedOrders[i].user_mobile = users.user_mobile;
 
-                const addrs = await addressModel.findOne({ _id: address_id}).lean();
+                const addrs = await addressModel.findOne({ _id: address_id }).lean();
                 unshippedOrders[i].addrs = addrs;
             } catch (err) {
                 console.log(err);
@@ -230,17 +266,53 @@ controller.unshippedOrders = async (req, res, next) => {
 
 controller.orderDelevered = (req, res, next) => {
     if (!req.session.user) return res.redirect("/admin");
-    const order_id = req.params.order_id;
+    const order_id = req.body.order_id;
     orderModel.findByIdAndUpdate({ _id: order_id }, { order_status: 2, shipped_date: new Date() }, (err, data) => {
         if (!err) {
-            req.flash("success", "Order Updated");
-            return res.redirect("back");
+            userModel.findOne({ _id: data.user_id }, (e, user) => {
+                if (!e) {
+                    //Authentication Key 
+                    var authkey = '224991AuVykO8pSsz5b4313bf';
+
+                    //for single number
+                    var number = user.user_mobile;;
+
+                    //message
+                    const msg = "Hii " + user.user_name + " Your Order is Delivered and Your order Id is: " + data._id + ", Thanks for Choosing www.purneashop.com. Team PurneaShop.";
+
+                    //Sender ID
+                    var senderid = 'PUSHOP';
+
+                    //Route
+                    var route = '4';
+
+                    //Country dial code
+                    var dialcode = '91';
+                    //send to single number
+                    // if (!user_info === undefined) {
+
+                    // }
+                    msg91.sendOne(authkey, number, msg, senderid, route, dialcode, function (response) {
+                        //Returns Message ID, If Sent Successfully or the appropriate Error Message
+                        if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
+                            // req.flash({success:"OTP Send Successfuy !"});
+                            console.log("mobile", number, "sms", response);
+                            return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
+                        } else {
+                            return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
+                        }
+
+                    });
+                } else {
+                    return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Data Updated Successfully But Message Not Send!", modal: "success" });
+                }
+            })
         } else {
-            req.flash("error", "Oops Error!! Try agail later.");
-            return res.redirect("back");
+            return res.send({ status: 0, title: "Oops Error", message: "Data Does Not Updated", modal: "error" });
         }
     })
 }
+
 controller.shippedOrders = async (req, res, next) => {
     if (!req.session.user) return res.redirect("/admin");
     let shippedOrder = [];
@@ -262,7 +334,7 @@ controller.shippedOrders = async (req, res, next) => {
 
                 shippedOrder[i].user_mobile = users.user_mobile;
 
-                const addrs = await addressModel.findOne({ _id: address_id}).lean();
+                const addrs = await addressModel.findOne({ _id: address_id }).lean();
                 shippedOrder[i].addrs = addrs;
             } catch (err) {
                 console.log(err);
@@ -292,6 +364,17 @@ controller.shippedOrders = async (req, res, next) => {
     }
 }
 
+controller.orderDelete = (req, res, next) => {
+    if (!req.session.user) return res.redirect("/admin");
+    const order_id = req.body.order_id;
+    orderModel.findByIdAndDelete({ _id: order_id }, (err, data) => {
+        if (!err) {
+            return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Deleted Successfully!", modal: "success" });
+        } else {
+            return res.send({ rowId: "row-" + data._id, status: 0, title: "Oops Error", message: "Does Not Deleted!", modal: "error" });
+        }
+    })
+}
 
 controller.todayShippedOrders = async (req, res, next) => {
     if (!req.session.user) return res.redirect("/admin");
@@ -447,7 +530,7 @@ controller.updateCategory = (req, res, next) => {
 
 controller.updateProduct = async (req, res, next) => {
     if (!req.session.user) return res.redirect("/admin");
-    
+
     req.checkBody("product_name", "Required Field").notEmpty().trim();
     req.checkBody("product_id", "Required Field").notEmpty();
     req.checkBody("product_desc", "Required Field").notEmpty();
@@ -464,24 +547,24 @@ controller.updateProduct = async (req, res, next) => {
         errors.forEach(element => {
             errObj[element.param] = element.msg;
         });
-        return res.send({status:0, list:errObj})
+        return res.send({ status: 0, list: errObj })
     }
     const body = req.body;
     const product_id = body.product_id;
     delete body.product_id;
     const product_category = mongoose.Types.ObjectId(body.product_category);
-    try{
-        const category_info = await categoryModel.findOne({_id:product_category}).lean();
+    try {
+        const category_info = await categoryModel.findOne({ _id: product_category }).lean();
         body.product_category = {
             name: category_info.category_name,
             _id: category_info._id
         }
-        productModel.findByIdAndUpdate({_id: product_id}, body, (err, data)=>{
-            if(!err) {
+        productModel.findByIdAndUpdate({ _id: product_id }, body, (err, data) => {
+            if (!err) {
                 let status = "Active";
-                if(data.product_status == 1){
+                if (data.product_status == 1) {
                     status = "<span class='badge badge-info'> Active </span>";
-                }else{
+                } else {
                     status = "<span class='badge badge-danger'> Disable </span>";
                 }
                 const row = `
@@ -496,10 +579,10 @@ controller.updateProduct = async (req, res, next) => {
                 <td><button class="btn btn-info px-2 py-1" onclick="getId('${data._id}')"> <i class="fa fa-edit"></i> </button><button class="btn btn-danger px-2 py-1" onclick="deleteData('${data._id}')"> <i class="fa fa-trash"></i> </button></td>`;
                 return res.send({ updatedRow: row, rowId: "row-" + data._id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
             }
-            else return res.send({status:0, title: "Oops Error", message: "Not Updated!", modal: "error" });
+            else return res.send({ status: 0, title: "Oops Error", message: "Not Updated!", modal: "error" });
         })
-    }catch(e){
-        return res.send({status:0, title: "Oops Error", message: "Not Updated!", modal: "error" });
+    } catch (e) {
+        return res.send({ status: 0, title: "Oops Error", message: "Not Updated!", modal: "error" });
     }
 }
 
@@ -532,7 +615,7 @@ controller.products = (req, res, next) => {
 
 
 controller.addProduct = async (req, res, next) => {
-    
+
     if (!req.session.user) return res.redirect("/admin");
     console.log(req.files)
 
@@ -547,7 +630,7 @@ controller.addProduct = async (req, res, next) => {
     req.checkBody("product_unit", "Unit Required").notEmpty();
     req.checkBody("product_stock", "Stock Required").notEmpty();
     const errors = req.validationErrors();
-    if(errors){
+    if (errors) {
         const message = [];
         errors.forEach(element => {
             message.push(element.msg);
@@ -556,12 +639,12 @@ controller.addProduct = async (req, res, next) => {
         return res.redirect("/admin/products");
     }
 
-    productModel.findOne({product_slag: body.product_slag}, (err, data)=>{
-        if(err) {
+    productModel.findOne({ product_slag: body.product_slag }, (err, data) => {
+        if (err) {
             req.flash("error", "OOps Error");
             return res.redirect("/admin/products");
         }
-        if(data) {
+        if (data) {
             req.flash("error", "Product Slag Allready Available");
             return res.redirect("/admin/products");
         }
@@ -569,7 +652,7 @@ controller.addProduct = async (req, res, next) => {
 
     const result = await cloudinary.v2.uploader.upload(req.file.path);
 
-    
+
     body.user_id = req.session.user._id;
     body.product_image = result.url;
 
@@ -609,7 +692,7 @@ controller.addProduct = async (req, res, next) => {
             });
 
 
-        }else{
+        } else {
             req.flash("error", "Product Not Added")
             res.redirect("/admin/products")
         }
@@ -623,11 +706,11 @@ controller.deleteProduct = (req, res, next) => {
 
     productModel.findOneAndRemove({ _id: req.body.product_id }, (err, data) => {
         if (!err) {
-            
+
             const url = data.product_image;
             let y = url.split("/");
-            let imgName = (y[y.length-1]).split(".")[0];
-            cloudinary.uploader.destroy(imgName, function(result) { console.log(result) });
+            let imgName = (y[y.length - 1]).split(".")[0];
+            cloudinary.uploader.destroy(imgName, function (result) { console.log(result) });
 
             return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Deleted Successfully!", modal: "success" });
         }
