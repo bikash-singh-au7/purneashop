@@ -1,6 +1,6 @@
 <div class="container-fluid bg-light mb-5">
     <div class="row mt-2">
-        <div class="col-md-12 m-auto my-2">
+        <div class="col-md-12 my-2">
             <div class="row">
                 {{#if success}}
                 <div class="alert alert-success col-md-6 m-auto">
@@ -10,111 +10,123 @@
             </div>
         </div>
     </div>
-        {{#if list.length}}
-            {{#each list}}
-            <div class="row">
-                <div class="col-md-2 col-sm-6 col-xs-12 px-1 mb-2">
-                    <div class="card border-0 product-card">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-white font-weight-bold">
+                    <li class="breadcrumb-item text-info"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item text-info"><a>Category</a></li>
+                    <li class="breadcrumb-item active text-danger" aria-current="page"><a>{{catName}}</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    {{#if list.length}}
+    <div class="row">
+        {{#each list}}
+        <div class="col-md-2 col-sm-6 col-xs-12 mb-2">
+            <div class="card border-0 product-card">
+                <div class="card-body px-0">
+                    <div class="row">
+                        <div class="col-xs-4 col-md-12 text-center">
+                            <span class="discount"> {{this.discount}}
+                                <p class="p-0 m-0 text-white">Off</p>
+                            </span>
 
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-xs-4 col-md-12 text-center">
-                                    <span class="discount"> {{this.discount}}
-                                        <p class="p-0 m-0 text-white">Off</p>
-                                    </span>
-                                    
-                                    <a href="/products/{{this.product_slag}}" class="card-link card border-0">
-                                        <img src="{{this.product_image}}"
-                                        class="card-img-top img-responsive image" alt="...">
-                                    </a>
+                            <a href="/products/{{this.product_slag}}" class="card-link card border-0">
+                                <img src="{{this.product_image}}" class="card-img-top img-responsive image" alt="...">
+                            </a>
+                        </div>
+                        <div class="col-xs-8 col-md-12">
+
+                            <div class="price text-info text-left">
+                                <p class="dis-price font-weight-bold text-dark m-0">
+                                    <i class="fa fa-inr"></i> {{this.product_price}}
+                                </p>
+                                <p class="mrp ml-3 text-muted m-0">
+                                    <i class="fa fa-inr"></i> {{this.product_mrp}}
+                                </p>
+                                <p class="ml-3 text-muted m-0 font-weight-bold">
+                                    ( Unit: {{this.product_unit}} )
+                                </p>
+                            </div>
+
+                            <h5 class="card-title title text-info text-left">
+                                <a href="/products/{{this.product_slag}}" class="card-link card border-0">
+                                    {{this.product_name}}
+                                </a>
+                            </h5>
+
+                            <div class="">
+                                <div class="quantity">
+                                    <button id="minus">-</button><input type="text" id="quantity" value="1"><button
+                                        id="plus">+
+                                    </button>
+
+                                    <button class="btn btn-info border-0 rounded-0 add-to-kart"
+                                        value="/users/addToCart/{{this.product_slag}}">
+                                        Add to Cart <img id="cartLoader" style="display:none"
+                                            src="/images/loader/ajax-loader.gif" alt="">
+                                    </button>
                                 </div>
-                                <div class="col-xs-8 col-md-12">
 
-                                    <div class="price text-info text-left">
-                                        <p class="dis-price font-weight-bold text-dark m-0">
-                                            <i class="fa fa-inr"></i> {{this.product_price}}
-                                        </p>
-                                        <p class="mrp ml-3 text-muted m-0">
-                                            <i class="fa fa-inr"></i> {{this.product_mrp}}
-                                        </p>
-                                        <p class="ml-3 text-muted m-0 font-weight-bold">
-                                            ( Unit: {{this.product_unit}} )
-                                        </p>
-                                    </div>
-
-                                    <h5 class="card-title title text-info text-left">
-                                        <a href="/products/{{this.product_slag}}" class="card-link card border-0">
-                                            {{this.product_name}}
-                                        </a>
-                                    </h5>
-
-                                    <div class="">
-                                        <div class="quantity">
-                                            <button id="minus">-</button><input type="text" id="quantity" value="1"><button
-                                                id="plus">+
-                                            </button>
-                                            
-                                            <button class="btn btn-info border-0 rounded-0 add-to-kart" value="/addToCart/{{this.product_slag}}">
-                                                Add to Cart <img id="cartLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
-                                            </button>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
                             </div>
                         </div>
-
-                        <div class="text-center mb-2">
-
-                        </div>
                     </div>
                 </div>
-            </div>
-            {{/each}}
-        {{else}}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card border-0">
-                        <div class="card-body">
-                            <h6 class="text-danger">No Data Available in This Category</h6>
-                        </div>
-                    </div>
+
+                <div class="text-center mb-2">
+
                 </div>
             </div>
-        {{/if}}
+        </div>
 
+        {{/each}}
     </div>
-    
+    {{else}}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h6 class="text-danger">No Data Available in This Category</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+</div>
+
 
 <script>
-    
-    $(".quantity").on("click", "#minus", function(){
+
+    $(".quantity").on("click", "#minus", function () {
         let parent = $(this).parent()
         let value = Number(parent.find("input").val());
-        if(value <= 1){
+        if (value <= 1) {
             parent.find("input").val(1);
-        }else{
-            value-=1;
+        } else {
+            value -= 1;
             parent.find("input").val(value);
         }
-        
+
     });
 
-     $(".quantity").on("click", "#plus", function(){
+    $(".quantity").on("click", "#plus", function () {
         let parent = $(this).parent()
         let value = Number(parent.find("input").val());
-        value+=1;
+        value += 1;
         parent.find("input").val(value);
-        
+
     });
 
-     $(".quantity").on("click", ".add-to-kart", function(){
+    $(".quantity").on("click", ".add-to-kart", function () {
         let parent = $(this).parent()
         let value = Number(parent.find("input").val());
         let url = $(this).val();
         $.ajax({
             url: url,
-            data: {qty: value},
+            data: { qty: value },
             type: "GET",
             dataType: "json",
             beforeSend: function () {
@@ -127,7 +139,7 @@
                 if (response["status"]) {
                     $("#cartLoader").hide();
                     $(".myCart").html(response["cart"].length);
-                    parent.html("<a href='/yourCart' class='btn btn-info border-0 rounded-0'>View Cart <i class='fa fa-arrow-right'></i> </a>");
+                    parent.html("<a href='/users/yourCart' class='btn btn-info border-0 rounded-0'>View Cart <i class='fa fa-arrow-right'></i> </a>");
                 }
             }
         });

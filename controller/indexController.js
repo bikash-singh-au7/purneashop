@@ -13,8 +13,10 @@ const controller = {};
 
 // create index controller
 controller.index = async (req, res, next) => {
+    req.session.current_url = '/account';
     // Getting Product
-    const productData = await productModel.find({ product_status: 1 }).limit(4).lean();
+    const cat_id = mongoose.Types.ObjectId("5f0b52f0fd223e001c0acb7c");
+    const productData = await productModel.find({ product_status: 1 , "product_category._id": cat_id}).limit(15).lean();
 
     // Add Discount Properties
     for (let x in productData) {
@@ -28,15 +30,17 @@ controller.index = async (req, res, next) => {
     // Getting All Category
     const categoryData = await categoryModel.find({ category_status: 1 }).lean();
     const cloneCategory = Array.from(categoryData);
-    const arr = cloneCategory.slice(0, 11);
+    const arr = cloneCategory.slice(0, 6);
     let categoryWise = {};
     let p = [];
+    let categoryId = {};
 
 
     // Getting Data Category Wise
     for (let x in arr) {
         p = await productModel.find({ "product_category._id": categoryData[x]._id, product_status: 1 }).limit(4).lean();
         categoryWise[arr[x].category_name] = p;
+        categoryId[arr[x].category_name] = arr[x]._id;
     }
 
     // Adding discount property
@@ -45,37 +49,45 @@ controller.index = async (req, res, next) => {
             const mrp = innerValue.product_mrp;
             const price = innerValue.product_price;
             const per = Math.trunc(100 - ((100 * price) / mrp));
-            categoryWise[key][innerKey].discount = per;
+            categoryWise[key][innerKey].discount = per + "%";
         }
     }
 
-
-    return res.render('index', { list: productData, catList: categoryData, categoryWise: categoryWise, title: 'Online Grocery', success: req.flash("success") });
+    return res.render('index', { list: productData, catList: categoryData, categoryWise: categoryWise, title: 'Online Grocery', success: req.flash("success"), catId: categoryId});
 }
 
 // category controller
 controller.category = (req, res, next) => {
+    req.session.current_url = '/account';
     const slag = mongoose.Types.ObjectId(req.params.slag);
-    productModel.find({ "product_category._id": slag }, (err, data) => {
-        for (let x in data) {
-            const mrp = data[x].product_mrp;
-            const price = data[x].product_price;
-            const per = Math.trunc(100 - ((100 * price) / mrp));
-            data[x].discount = per + "%";
-        }
+    productModel.find({ "product_category._id": slag, product_status: 1 }, (err, data) => {
         if (!err) {
+            for (let x in data) {
+                const mrp = data[x].product_mrp;
+                const price = data[x].product_price;
+                const per = Math.trunc(100 - ((100 * price) / mrp));
+                data[x].discount = per + "%";
+            }
+
+            if(data.length == 0){
+                var catName = '';
+            }else{
+                var catName = data[0].product_category.name;
+            }
+
             categoryModel.find((e, cat) => {
-                if (!err) return res.render('category', { list: data, catList: cat, title: 'Online Grocery', success: req.flash("success") });
-                return res.render('category', { list: data, catList: [], title: 'Online Grocery', success: req.flash("success") });
+                if (!e) return res.render('category', { list: data, catList: cat, title: 'Online Grocery', success: req.flash("success"), catName: catName });
+                return res.render('category', { list: data, catList: [], title: 'Online Grocery', success: req.flash("success"), catName: "" });
             }).lean();
         }
-        else return res.render('category', { list: {}, title: 'Online Grocery' });
+        else return res.render('category', { list: {}, title: 'Online Grocery', catName: "" });
     }).lean();
 }
 
 
 // product controller
 controller.products = (req, res, next) => {
+    req.session.current_url = '/account';
     productModel.find({ product_slag: req.params.slag }, (err, data) => {
         for (let x in data) {
             const mrp = data[x].product_mrp;
@@ -92,233 +104,6 @@ controller.products = (req, res, next) => {
         // if (!err) return res.render('products', { list: data, title: 'Online Grocery', success: req.flash("success")});
         else return res.render('products', { list: {}, catList: cat, title: 'Online Grocery' });
     }).lean();
-
-}
-
-// Add to Kart controller
-controller.addToCart = (req, res, next) => {
-    const slag = req.params.slag;
-    const qty = req.query.qty;
-    productModel.findOne({ product_slag: slag }, (err, data) => {
-        if (err) {
-            console.log(err);
-        } else {
-            let newItem = true;
-            if (typeof req.session.cart == "undefined") {
-                req.session.cart = [];
-                req.session.cart.push(
-                    {
-                        product_image: data.product_image,
-                        product_name: data.product_name,
-                        product_slag: data.product_slag,
-                        product_price: data.product_price,
-                        qty: qty,
-                    }
-                )
-            } else {
-                let cart = req.session.cart;
-                for (let i = 0; i < cart.length; i++) {
-                    if (cart[i]["product_slag"] == slag) {
-                        cart[i].qty++;
-                        newItem = false;
-                        break;
-                    }
-                }
-                if (newItem) {
-                    req.session.cart.push(
-                        {
-                            product_image: data.product_image,
-                            product_name: data.product_name,
-                            product_price: data.product_price,
-                            product_slag: data.product_slag,
-                            qty: qty,
-                        }
-                    )
-                }
-            }
-        }
-        // req.flash("success", "Product Added");
-        // res.redirect("back");
-
-        res.send({ status: true, value: 'Product Added', cart: req.session.cart });
-    }).lean();
-}
-
-// View your cart controller
-controller.yourCart = (req, res, next) => {
-    req.session.current_url = req.url;
-    let cart = req.session.cart;
-    let totalAmount = 0;
-    let order = true;
-    if (typeof cart == "undefined") {
-        cart = [];
-    } else {
-
-        for (let i = 0; i < cart.length; i++) {
-            cart[i].subtotal = (cart[i].product_price * cart[i].qty).toFixed(2);
-            totalAmount += Number(cart[i].subtotal);
-        }
-    }
-
-    if (totalAmount < 300) {
-        order = false;
-    }
-    res.render("cart", { cart: cart, success: req.flash("success"), totalAmount: totalAmount, order: order });
-}
-
-// checkout controller
-controller.checkout = (req, res, next) => {
-    req.session.current_url = req.url;
-    addressModel.find({ user_id: req.session.user._id }, (err, data) => {
-        if (!err) return res.render("checkout", { errors: req.flash("error"), list: data, success: req.flash("success") });
-        return res.render("checkout", { errors: req.flash("error"), list: err, success: [] });
-    }).lean();
-}
-
-// check checkout controller
-controller.getCheckout = (req, res, next) => {
-    req.checkBody("address", "Address is Required").notEmpty();
-    req.checkBody("payment_mode", "Mode is Required").notEmpty();
-    const errors = req.validationErrors();
-    if (errors) {
-        const message = [];
-        errors.forEach(element => {
-            message.push(element.msg);
-        });
-        req.flash("error", message);
-        return res.redirect("/checkout");
-    }
-
-
-    let cart = req.session.cart;
-    let totalAmount = 0;
-    if (typeof cart == "undefined") {
-        cart = [];
-    } else {
-
-        for (let i = 0; i < cart.length; i++) {
-            cart[i].subtotal = (cart[i].product_price * cart[i].qty).toFixed(2);
-            totalAmount += Number(cart[i].subtotal);
-        }
-    }
-
-    const body = req.body;
-    body.cart = cart;
-    body.user_id = req.session.passport.user;
-    body.total_amount = totalAmount;
-
-
-
-    const orderData = new orderModel(body);
-    orderData.save((err, data) => {
-        if (err) {
-            return console.log(err);
-        } else {
-            const mobile = req.session.user.mobile;
-
-            console.log(mobile, "mono");
-            //Authentication Key 
-            var authkey = '224991AuVykO8pSsz5b4313bf';
-
-            //for single number
-            var number = mobile;
-
-            //message
-            const msg = "Hii " + req.session.user.name + " Your Order is Confirmed and Order Id is: " + data._id + ", Thanks for Choosing www.purneashop.com.";
-
-            //Sender ID
-            var senderid = 'PUSHOP';
-
-            //Route
-            var route = '4';
-
-            //Country dial code
-            var dialcode = '91';
-            //send to single number
-            // if (!user_info === undefined) {
-
-            // }
-            msg91.sendOne(authkey, number, msg, senderid, route, dialcode, function (response) {
-                //Returns Message ID, If Sent Successfully or the appropriate Error Message
-                if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
-                    // req.flash({success:"OTP Send Successfuy !"});
-                    console.log("mobile",number, "sms", response);
-                    
-                    delete req.session.cart;
-                    req.flash("success", "Order Successfull Competed, Check Your Inbox.");
-                    return res.redirect("/order");
-                    // console.log(response, "send");
-                } else {
-                    req.flash("success", "Order Successfull Competed");
-                    return res.redirect("/order");
-                }
-
-            });
-        }
-    })
-
-}
-
-// Update Kart controller
-controller.updateCart = (req, res, next) => {
-    let cart = req.session.cart;
-    let action = req.query.action;
-    let slag = req.params.slag;
-
-    for (let i = 0; i < cart.length; i++) {
-        if (cart[i].product_slag == slag) {
-            if (action == "add") {
-                cart[i].qty++;
-            } else if (action == "minus") {
-                if (cart[i].qty <= 1) {
-
-                } else {
-                    cart[i].qty--;
-                }
-            } else if (action == "remove") {
-                if (cart.length == 1) {
-                    delete req.session.cart;
-                } else {
-                    cart.splice(i, i);
-                }
-            }
-
-        }
-    }
-    req.flash("success", "Cart Updated");
-    res.redirect("back");
-}
-
-controller.order = async (req, res, next) => {
-    try {
-        const data = await orderModel.find({ user_id: req.session.passport.user }).lean().sort({order_date:-1});
-
-        for (let i = 0; i < data.length; i++) {
-            let shippedDate = data[i].shipped_date == null ? "Not Delevered Yet" : data[i].shipped_date.toDateString();
-            data[i].order_date = data[i].order_date.toDateString();
-            data[i].shipped_date = shippedDate;
-            data[i].sn = i + 1;
-            let status = "Pending";
-            if (data[i].order_status == 1) {
-                status = "Confirm";
-            } else if (data[i].order_status == 2) {
-                status = "Delevered";
-            } else if (data[i].order_status == 3) {
-                status = "Canceled";
-            }
-            data[i].order_status = status;
-
-
-
-            const address = await addressModel.findOne({ _id: data[i].address }).lean();
-            data[i].address = address.user_name + ",(" + address.address + "," + address.landmark + "," + address.pincode + ")";
-            data[i].name = address.user_name;
-        }
-        return res.render('order', { list: data, title: 'Online Grocery', message: req.flash("success") });
-    } catch (e) {
-        console.log("Order Page Error", e)
-        return res.render('order', { list: [], title: 'Online Grocery', message: ["Oops Error Occured"] });
-    }
 
 }
 

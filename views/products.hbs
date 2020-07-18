@@ -42,7 +42,7 @@
                                             id="plus">+
                                         </button>
                                         
-                                        <button class="btn btn-info border-0 rounded-0 add-to-kart" value="/addToCart/{{this.product_slag}}">
+                                        <button class="btn btn-info border-0 rounded-0 add-to-kart" value="/users/addToCart/{{this.product_slag}}">
                                             Add to Cart <img id="cartLoader" style="display:none" src="/images/loader/ajax-loader.gif" alt="">
                                         </button>
                                     </div>
@@ -125,7 +125,7 @@
                 if (response["status"]) {
                     $("#cartLoader").hide();
                     $(".myCart").html(response["cart"].length);
-                    parent.html("<a href='/yourCart' class='btn btn-info border-0 rounded-0'>View Cart <i class='fa fa-arrow-right'></i> </a>");
+                    parent.html("<a href='/users/yourCart' class='btn btn-info border-0 rounded-0'>View Cart <i class='fa fa-arrow-right'></i> </a>");
                 }
             }
         });

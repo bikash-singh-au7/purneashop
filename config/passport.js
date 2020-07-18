@@ -86,6 +86,8 @@ passport.use('local.signin', new localStrategy({
     passwordField: 'user_password',
     passReqToCallback: true
 }, function (req, user_mobile, user_password, done) {
+    
+
     req.checkBody("user_email", "Invalid Mobile Number").notEmpty().isLength({max:10, min:10}).isInt();
     req.checkBody("user_password", "Invalid Password").notEmpty().isLength({min:5});
     const errors = req.validationErrors();

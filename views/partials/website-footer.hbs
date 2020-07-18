@@ -1,4 +1,4 @@
-<div class="container-fluid bg-info footer py-2">
+<div class="container-fluid bg-info footer py-2 mt-2">
     <div class="row">
         <div class="col-md-4 mb-4">
             <h1 class="text-white heading h6">About Us</h1>
@@ -87,12 +87,8 @@
 </div>
 
 <script>
-    // Only enable if the document has a long scroll bar
-    // Note the window height + offset
-    if (($(window).height() + 100) < $(document).height()) {
-        $('#top-link-block').removeClass('hidden').affix({
-            // how far to scroll down before link "slides" into view
-            offset: { top: 100 }
-        });
-    }
+    /*Page loader*/
+    $(window).on('load', function () {
+        $("#loading").fadeOut();
+    });
 </script>

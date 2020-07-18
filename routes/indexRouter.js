@@ -7,13 +7,17 @@ const indexController = require("../controller/indexController");
 /* GET home page. */
 router.get('/', indexController.index);
 router.get('/products/:slag', indexController.products);
-router.get('/addToCart/:slag', indexController.addToCart);
-router.get('/checkout/', isLoggedIn, indexController.checkout);
-router.post('/checkout/', isLoggedIn, indexController.getCheckout);
-router.get('/updateCart/:slag', indexController.updateCart);
-router.get('/yourCart', indexController.yourCart);
-router.get('/order', isLoggedIn, indexController.order);
 router.get('/category/:slag', indexController.category);
+
+
+// Both are the extra router for SEO Purpose
+router.get('/order', (req, res)=>{
+  res.redirect("/users/order");
+});
+router.get('/yourCart', (req, res)=>{
+  res.redirect("/users/yourCart");
+});
+
 
 router.post('/search', indexController.search);
 router.get('/sitemap.xml', indexController.sitemap);
@@ -23,6 +27,7 @@ router.get('/sitemap.xml', indexController.sitemap);
 module.exports = router;
 
 function isLoggedIn(req, res, next){
+    req.session.current_url = req.url;
     if(req.isAuthenticated()){
       return next();
     }

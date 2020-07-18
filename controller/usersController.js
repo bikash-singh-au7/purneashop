@@ -1,7 +1,9 @@
 // import
 const userModel = require("../models/userModel");
 const addressModel = require("../models/addressModel");
-const categoryModel = require("../models/categoryModel")
+const categoryModel = require("../models/categoryModel");
+const orderModel = require("../models/orderModel");
+const productModel = require("../models/productModel");
 const { router } = require("../app");
 const msg91 = require('msg91-sms');
 
@@ -12,6 +14,7 @@ const controller = {};
 // create signup controller
 controller.signup = (req, res, next) => {
     const message = req.flash("error");
+    req.session.current_url = "/account";
     res.render("users/signup", { csrfToken: req.csrfToken(), data: req.flash("data")[0], message: message[0], hasError: message.length > 0 });
 }
 
@@ -247,9 +250,242 @@ controller.deleteAddress = (req, res, next) => {
 }
 
 
+// Add to Kart controller
+controller.addToCart = (req, res, next) => {
+    const slag = req.params.slag;
+    const qty = req.query.qty;
+    productModel.findOne({ product_slag: slag }, (err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            let newItem = true;
+            if (typeof req.session.cart == "undefined") {
+                req.session.cart = [];
+                req.session.cart.push(
+                    {
+                        product_image: data.product_image,
+                        product_name: data.product_name,
+                        product_slag: data.product_slag,
+                        product_price: data.product_price,
+                        qty: qty,
+                    }
+                )
+            } else {
+                let cart = req.session.cart;
+                for (let i = 0; i < cart.length; i++) {
+                    if (cart[i]["product_slag"] == slag) {
+                        cart[i].qty++;
+                        newItem = false;
+                        break;
+                    }
+                }
+                if (newItem) {
+                    req.session.cart.push(
+                        {
+                            product_image: data.product_image,
+                            product_name: data.product_name,
+                            product_price: data.product_price,
+                            product_slag: data.product_slag,
+                            qty: qty,
+                        }
+                    )
+                }
+            }
+        }
+        // req.flash("success", "Product Added");
+        // res.redirect("back");
+
+        res.send({ status: true, value: 'Product Added', cart: req.session.cart });
+    }).lean();
+}
+
+// View your cart controller
+controller.yourCart = (req, res, next) => {
+    req.session.current_url = req.url;
+    let cart = req.session.cart;
+    let totalAmount = 0;
+    let order = true;
+    if (typeof cart == "undefined") {
+        cart = [];
+    } else {
+
+        for (let i = 0; i < cart.length; i++) {
+            cart[i].subtotal = (cart[i].product_price * cart[i].qty).toFixed(2);
+            totalAmount += Number(cart[i].subtotal);
+        }
+    }
+
+    if (totalAmount < 400) {
+        order = false;
+    }
+    res.render("users/cart", { cart: cart, success: req.flash("success"), totalAmount: totalAmount, order: order });
+}
+
+// checkout controller
+controller.checkout = (req, res, next) => {
+    req.session.current_url = req.url;
+    addressModel.find({ user_id: req.session.user._id }, (err, data) => {
+        if (!err) return res.render("users/checkout", { errors: req.flash("error"), list: data, success: req.flash("success"), csrfToken: req.csrfToken(), });
+        return res.render("users/checkout", { errors: req.flash("error"), list: err, success: [], csrfToken: req.csrfToken(), });
+    }).lean();
+}
+
+// check checkout controller
+controller.getCheckout = (req, res, next) => {
+    req.checkBody("address", "Address is Required").notEmpty();
+    req.checkBody("payment_mode", "Mode is Required").notEmpty();
+    const errors = req.validationErrors();
+    if (errors) {
+        const message = [];
+        errors.forEach(element => {
+            message.push(element.msg);
+        });
+        req.flash("error", message);
+        return res.redirect("/users/checkout");
+    }
+
+
+    let cart = req.session.cart;
+    let totalAmount = 0;
+    if (typeof cart == "undefined") {
+        cart = [];
+    } else {
+
+        for (let i = 0; i < cart.length; i++) {
+            cart[i].subtotal = (cart[i].product_price * cart[i].qty).toFixed(2);
+            totalAmount += Number(cart[i].subtotal);
+        }
+    }
+
+    const body = req.body;
+    body.cart = cart;
+    body.user_id = req.session.passport.user;
+    body.total_amount = totalAmount;
+
+
+
+    const orderData = new orderModel(body);
+    orderData.save((err, data) => {
+        if (err) {
+            return console.log(err);
+        } else {
+            const mobile = req.session.user.mobile;
+
+            console.log(mobile, "mono");
+            //Authentication Key 
+            var authkey = '224991AuVykO8pSsz5b4313bf';
+
+            //for single number
+            var number = mobile;
+
+            //message
+            const msg = "Hi " + req.session.user.name + ", Your Order Pending and Order Id is: " + data._id + " Wait for Confirm Your Order. Team www.purneashop.com.";
+
+            //Sender ID
+            var senderid = 'PUSHOP';
+
+            //Route
+            var route = '4';
+
+            //Country dial code
+            var dialcode = '91';
+            //send to single number
+            // if (!user_info === undefined) {
+
+            // }
+            msg91.sendOne(authkey, number, msg, senderid, route, dialcode, function (response) {
+                //Returns Message ID, If Sent Successfully or the appropriate Error Message
+                if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
+                    // req.flash({success:"OTP Send Successfuy !"});
+                    console.log("mobile",number, "sms", response);
+                    
+                    delete req.session.cart;
+                    req.flash("success", "Order Successfull Competed, Check Your Inbox.");
+                    return res.redirect("/users/order");
+                    // console.log(response, "send");
+                } else {
+                    req.flash("success", "Order Successfull Competed");
+                    return res.redirect("/users/order");
+                }
+
+            });
+        }
+    })
+
+}
+
+// Update Kart controller
+controller.updateCart = (req, res, next) => {
+    let cart = req.session.cart;
+    let action = req.query.action;
+    let slag = req.params.slag;
+
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].product_slag == slag) {
+            if (action == "add") {
+                cart[i].qty++;
+            } else if (action == "minus") {
+                if (cart[i].qty <= 1) {
+
+                } else {
+                    cart[i].qty--;
+                }
+            } else if (action == "remove") {
+                if (cart.length == 1) {
+                    delete req.session.cart;
+                } else {
+                    cart.splice(i, i);
+                }
+            }
+
+        }
+    }
+    req.flash("success", "Cart Updated");
+    res.redirect("back");
+}
+
+controller.order = async (req, res, next) => {
+    try {
+        const data = await orderModel.find({ user_id: req.session.passport.user }).lean().sort({order_date:-1});
+
+        console.log(data);
+        for (let i = 0; i < data.length; i++) {
+            let shippedDate = data[i].shipped_date == null ? "Not Delevered Yet" : data[i].shipped_date.toDateString();
+            data[i].order_date = data[i].order_date.toDateString();
+            data[i].shipped_date = shippedDate;
+            data[i].sn = i + 1;
+            let status = "Pending";
+            if (data[i].order_status == 1) {
+                status = "Confirm";
+            } else if (data[i].order_status == 2) {
+                status = "Delevered";
+            } else if (data[i].order_status == 3) {
+                status = "Canceled";
+            }
+            data[i].order_status = status;
+
+
+
+            const address = await addressModel.findOne({ _id: data[i].address }).lean();
+            data[i].address = address.user_name + ",(" + address.address + "," + address.landmark + "," + address.pincode + ")";
+            data[i].name = address.user_name;
+        }
+        return res.render('users/order', { list: data, title: 'Online Grocery', message: req.flash("success") });
+    } catch (e) {
+        console.log("Order Page Error", e)
+        return res.render('users/order', { list: [], title: 'Online Grocery', message: ["Oops Error Occured"] });
+    }
+
+}
+
+
+
+
+
 // signin controller
 controller.signin = (req, res, next) => {
     const message = req.flash("error");
+    console.log("url", req.session.current_url)
     res.render("users/signin", { csrfToken: req.csrfToken(), message: message, hasError: message.length > 0 });
 }
 
