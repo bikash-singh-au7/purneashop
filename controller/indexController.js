@@ -15,8 +15,7 @@ const controller = {};
 controller.index = async (req, res, next) => {
     req.session.current_url = '/account';
     // Getting Product
-    const cat_id = mongoose.Types.ObjectId("5f0b52f0fd223e001c0acb7c");
-    const productData = await productModel.find({ product_status: 1 , "product_category._id": cat_id}).limit(15).lean();
+    const productData = await productModel.find({ product_status: 1}).limit(5).lean();
 
     // Add Discount Properties
     for (let x in productData) {
@@ -38,7 +37,7 @@ controller.index = async (req, res, next) => {
 
     // Getting Data Category Wise
     for (let x in arr) {
-        p = await productModel.find({ "product_category._id": categoryData[x]._id, product_status: 1 }).limit(4).lean();
+        p = await productModel.find({ "product_category._id": categoryData[x]._id, product_status: 1 }).limit(5).lean();
         categoryWise[arr[x].category_name] = p;
         categoryId[arr[x].category_name] = arr[x]._id;
     }
