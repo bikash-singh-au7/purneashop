@@ -3,23 +3,35 @@
         <div class="col-md-4 mb-4">
             <h1 class="text-white heading h6">About Us</h1>
             <p class="content text-white px-2">
-                Purneashop.com is a Shopping Site that focus mainly to the purnea areas. If you are from Purnea, you can
+                Purnea Shop : PurneaShop.com is a Shopping Site that focus mainly to the purnea areas. If you are from Purnea, you can
                 purchase all grocery items at cheepest price with fast delivery (within some hours).
             </p>
+            <p class="content text-white px-2">
+                Purnea Shop Provides best quality products.
+            </p>
+
+            
+
             <p class="content text-white px-2">
                 Stay Home Stay Safe
             </p>
         </div>
-
+    
         <div class="col-md-4 mb-4">
-            <h1 class="text-white heading h6">Category</h1>
+            <h1 class="text-white heading h6">Quick LInks</h1>
             <ul class="list-group px-0">
-                {{#each catList as |cat|}}
                 <li class="list-group-item bg-none m-0 py-0 px-2">
+                    <a href="/terms-condition"> <span class="content text-white"><i class="fa fa-angle-right"></i> Terms & Condition </span> </a>
+                </li>
+                <li class="list-group-item bg-none m-0 py-0 px-2">
+                    <a href="/terms-condition"> <span class="content text-white"><i class="fa fa-angle-right"></i> Privacy & Policy </span> </a>
+                </li>
+                {{#each catList as |cat|}}
+                {{!-- <li class="list-group-item bg-none m-0 py-0 px-2">
                     <a href="/category/{{this._id}}" class="mb-1">
                         <span class="content text-white"><i class="fa fa-angle-down"></i> {{this.category_name}}</span>
                     </a>
-                </li>
+                </li> --}}
                 {{/each}}
 
             </ul>
@@ -37,144 +49,7 @@
                 <li class="list-group-item bg-none m-0 py-1 px-1">
                     <div class="h6 sub-heading text-white"> <i class="fa fa-phone"></i> Phone</div>
                     <div class="content text-white m-2">
-                        <a href="tel:9117162463
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        ">+91-9117162463
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            
-                        </a>
+                        <a href="tel:9117162463">+91-9117162463</a>
                     </div>
                 </li>
                 <li class="list-group-item bg-none m-0 py-1 px-1">
@@ -205,20 +80,20 @@
             </div>
         </div>
         <div class="col-md-6">
-            <p class="content text-light my-2">@ PurneaShop.com 2020 All Rights Reserved</p>
+            <p class="content text-light my-2">@ Purnea Shop : purneaShop.com 2020 All Rights Reserved</p>
         </div>
     </div>
 
     <!-- child of the body tag -->
-    <span id="top-link-block" class="hidden bg-danger" >
+    {{!-- <span id="top-link-block" class="hidden bg-danger" >
         <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
             <i class="fa fa-angle-up px-2 py-1 "></i> 
         </a>
-    </span><!-- /top-link-block -->
+    </span><!-- /top-link-block --> --}}
 
     <span id="whatsapp-icon" class="hidden bg-danger heartbeat">
         <a href="https://api.whatsapp.com/send?phone=+918541902108&text=Hi,%20I%20am%20from%20your%20website%20www.purneashop.com">
-            <i class="fa fa-whatsapp px-3 py-3"></i> 
+            Order on WhatsApp <i class="fa fa-whatsapp"></i> 
         </a>
     </span><!-- /top-link-block -->
 </div>

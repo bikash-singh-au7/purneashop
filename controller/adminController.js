@@ -20,7 +20,7 @@ const controller = {};
 
 // Login Controller
 controller.login = (req, res, next) => {
-    if (req.session.user) return res.redirect("/admin/home");
+    if (req.session.admin) return res.redirect("/admin/home");
     res.render("admin/login/login", { layout: 'backend' });
 };
 
@@ -35,7 +35,7 @@ controller.auth = (req, res, next) => {
         if (err || !data) {
             res.send({ login: false });
         } else {
-            req.session.user = data;
+            req.session.admin = data;
             res.send({ login: true, data: data });
         }
     });
@@ -43,7 +43,7 @@ controller.auth = (req, res, next) => {
 
 // Home Controller
 controller.home = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     let users = [];
     let pendingOrders = [];
     let unshippedOrders = [];
@@ -97,7 +97,7 @@ controller.home = async (req, res, next) => {
 
 // Users Controler
 controller.users = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     userModel.find((err, data) => {
         if (!err) {
             return res.render("admin/users/users", { layout: "backend", list: data });
@@ -108,7 +108,7 @@ controller.users = async (req, res, next) => {
 
 // Category
 controller.category = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     categoryModel.find((err, data) => {
         if (!err) return res.render("admin/category/category", { layout: "backend", list: data });
         else return res.render("admin/category/category", { layout: "backend", list: data });
@@ -118,7 +118,7 @@ controller.category = (req, res, next) => {
 //================= Order===============
 // pending Order
 controller.pendingOrders = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     let pendingOrder = [];
     let order = [];
     try {
@@ -167,7 +167,7 @@ controller.pendingOrders = async (req, res, next) => {
 }
 
 controller.orderConfirm = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     const order_id = req.body.order_id;
     orderModel.findByIdAndUpdate({ _id: order_id }, { order_status: 1, shipped_date: new Date() }, (err, data) => {
         if (!err) {
@@ -216,7 +216,7 @@ controller.orderConfirm = (req, res, next) => {
 }
 
 controller.unshippedOrders = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     let unshippedOrders = [];
     let order = [];
     try {
@@ -265,7 +265,7 @@ controller.unshippedOrders = async (req, res, next) => {
 }
 
 controller.orderDelevered = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     const order_id = req.body.order_id;
     orderModel.findByIdAndUpdate({ _id: order_id }, { order_status: 2, shipped_date: new Date() }, (err, data) => {
         if (!err) {
@@ -314,7 +314,7 @@ controller.orderDelevered = (req, res, next) => {
 }
 
 controller.shippedOrders = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     let shippedOrder = [];
     let order = [];
     try {
@@ -365,7 +365,7 @@ controller.shippedOrders = async (req, res, next) => {
 }
 
 controller.orderDelete = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     const order_id = req.body.order_id;
     orderModel.findByIdAndDelete({ _id: order_id }, (err, data) => {
         if (!err) {
@@ -377,7 +377,7 @@ controller.orderDelete = (req, res, next) => {
 }
 
 controller.todayShippedOrders = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     let shippedOrder = [];
     let order = [];
     try {
@@ -429,7 +429,7 @@ controller.todayShippedOrders = async (req, res, next) => {
 
 
 controller.addCategory = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     const body = req.body;
     const categoryData = new categoryModel(body);
     categoryData.save((err, data) => {
@@ -480,21 +480,21 @@ controller.addCategory = (req, res, next) => {
 }
 
 controller.getCategory = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     categoryModel.findById({ _id: req.body.category_id }, (err, data) => {
         if (!err) return res.send({ list: data });
         else return res.send({ list: data });
     }).lean()
 }
 controller.getProduct = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     productModel.findById({ _id: req.body.product_id }, (err, data) => {
         if (!err) return res.send({ list: data });
         else return res.send({ list: data });
     }).lean()
 }
 controller.updateCategory = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     if (req.body.category_name == "") {
         return res.send({ status: 0, formError: { category_name: "Field is required" } });
     }
@@ -529,7 +529,7 @@ controller.updateCategory = (req, res, next) => {
 }
 
 controller.updateProduct = async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
 
     req.checkBody("product_name", "Required Field").notEmpty().trim();
     req.checkBody("product_id", "Required Field").notEmpty();
@@ -587,7 +587,7 @@ controller.updateProduct = async (req, res, next) => {
 }
 
 controller.deleteCategory = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     categoryModel.findOneAndRemove({ _id: req.body.category_id }, (err, data) => {
         if (!err) return res.send({ rowId: "row-" + data._id, status: 1, title: "Done", message: "Deleted Successfully!", modal: "success" });
         else return res.send({ status: 0, title: "Oops error", message: "Error occured try after sometime", modal: "error" });
@@ -598,7 +598,7 @@ controller.deleteCategory = (req, res, next) => {
 
 // Products
 controller.products = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
 
     productModel.find((err, data) => {
         if (!err) {
@@ -616,7 +616,7 @@ controller.products = (req, res, next) => {
 
 controller.addProduct = async (req, res, next) => {
 
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     console.log(req.files)
 
 
@@ -653,7 +653,7 @@ controller.addProduct = async (req, res, next) => {
     const result = await cloudinary.v2.uploader.upload(req.file.path);
 
 
-    body.user_id = req.session.user._id;
+    body.user_id = req.session.admin._id;
     body.product_image = result.url;
 
     categoryModel.findById({ _id: body.product_category }, (err, data) => {
@@ -701,7 +701,7 @@ controller.addProduct = async (req, res, next) => {
 
 
 controller.deleteProduct = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
 
 
     productModel.findOneAndRemove({ _id: req.body.product_id }, (err, data) => {
@@ -728,7 +728,7 @@ controller.logout = (req, res) => {
 }
 
 controller.saveData = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/admin");
+    if (!req.session.admin) return res.redirect("/admin");
     const body = req.body;
 
     const admin = new adminModel(body);
@@ -739,6 +739,13 @@ controller.saveData = (req, res, next) => {
             console.log(data);
         }
     })
+};
+
+controller.offlineOrder = (req, res, next) => {
+    if (!req.session.admin) return res.redirect("/admin");
+    res.render("admin/offline-order/order", {layout: "backend"});
+
+    
 };
 
 

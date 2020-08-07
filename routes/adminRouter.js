@@ -64,6 +64,8 @@ router.put("/orderDelevered", adminController.orderDelevered);
 router.post("/getProduct", adminController.getProduct);
 router.put("/updateProduct", adminController.updateProduct);
 
+router.get("/offlineOrder", adminController.offlineOrder);
+
 // Delete Order
 router.delete("/orderDelete", adminController.orderDelete);
 

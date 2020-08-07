@@ -1,0 +1,151 @@
+<div class="container-fluid mt-2">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-2">
+                    <div class="float-left">
+                        <h5>Offline Orders</h5>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="pb-1">
+                        <div class="container-fluid px-0" id="formContainer">
+                            <div class="row" id="searchForm">
+                                <div class="col-md-12">
+                                    <form action="" id="searchNow">
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend ">
+                                                <div class="input-group-text bg-white text-info ">
+                                                    <i class="fa fa-search bg-white text-info"></i>
+                                                </div>
+                                            </div>
+                                            <input type="search" class="form-control pl-0" id="search_query"
+                                                name="search_query" placeholder="Search Here!!" autofocus>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row" id="searchedItem">
+                                <div class="col-md-12">
+                                    <div class="shadow-sm bg-white px-0 rounded">
+                                        <div id="itemContainer">
+
+                                        </div>
+                                        <div class="text-center">
+                                            <img id="searchLoader" style="display: none;"
+                                                src="/images/loader/ajax-loader.gif" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-center text-info"> OR</h6>
+
+                    <form action="" id="manualForm">
+                        <div class="form-group">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend ">
+                                    <div class="input-group-text bg-white text-info">
+                                        Item
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control pl-2" id="search_query" name="product_name"
+                                    placeholder="Item Name !!">
+                            </div>
+
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend ">
+                                    <div class="input-group-text bg-white text-info">
+                                        Qnty
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control pl-2" id="search_query" name="product_qty"
+                                    placeholder="Quantity !!">
+                            </div>
+
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend ">
+                                    <div class="input-group-text bg-white text-info">
+                                        Price
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control pl-2" id="search_query" name="product_price"
+                                    placeholder="Price !!">
+                            </div>
+
+                            <div class="">
+                                <button class="btn-info btn rounded-0 border-0">Add</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    hh
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(".quantity").on("click", "#plus", function () {
+        alert("+")
+
+    });
+
+     $("#search_query").on("keyup", function () {
+        let q = $(this).val();
+        if (q.length > 0) {
+            $.ajax({
+                url: "/search",
+                data: $(this).serialize(),
+                type: "POST",
+                dataType: "json",
+                beforeSend: function () {
+                    $("#searchLoader").show();
+                },
+                complete: function () {
+                    $("#searchLoader").hide();
+                },
+                success: function (response) {
+                    if (response["isData"]) {
+                        let html = "";
+                        for (let i = 0; i < response["list"].length; i++) {
+                            html = html + "<div class='p-2 border-bottom'> <a href='/products/" + response["list"][i].product_slag + "'>" + response["list"][i].product_name + "</a> <button class='rr' on></button>";
+                        }
+                        $("#itemContainer").html(html);
+                    } else {
+                        let html = "<div class='p-2 text-muted border-bottom text-center'> <a class='text-danger'> " + response["list"] + " </a> </div>";
+                        $("#itemContainer").html(html);
+                    }
+                }
+            });
+        } else {
+            $("#itemContainer").html('');
+        }
+
+    })
+
+
+
+    $(".rr").click(function(){
+        alert("rr")
+    })
+</script>

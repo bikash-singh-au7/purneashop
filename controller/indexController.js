@@ -14,6 +14,9 @@ const controller = {};
 // create index controller
 controller.index = async (req, res, next) => {
     req.session.current_url = '/account';
+
+    // return res.render("maintenance");
+
     // Getting Product
     const productData = await productModel.find({ product_status: 1}).limit(5).lean();
 
@@ -136,6 +139,19 @@ controller.sitemap = function (req, res, next) {
     // res.set('Content-Type', 'text/xml')
     // res.send(xml_content.join('\n'))
 }
+
+
+// Terms & Conditions
+controller.termsCondition = (req, res) =>{
+    res.render("terms-condition")
+}
+
+// Privacy & Policy
+controller.privacyPolicy = (req, res) =>{
+    res.render("privacy-policy")
+}
+
+
 
 // exporting the controller
 module.exports = controller;

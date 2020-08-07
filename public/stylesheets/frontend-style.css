@@ -270,12 +270,12 @@ a{
 
 #whatsapp-icon{
     position: fixed;
-    right: 11px;
-    bottom: 70px;
+    left: 11px;
+    bottom: 20px;
     z-index: 99;
-    background: #053B44;
+    background: #03a84e !important;
     color: rgb(255, 255, 255);
-    border-radius: 100%;
+    padding: 5px 8px;
 }
 .heartbeat {
 	-webkit-animation: heartbeat 1.5s ease-in-out infinite both;
@@ -351,3 +351,15 @@ a{
     }
   }
   
+
+/* terms-condition */
+.terms-condition .heading{
+    font-size: 14px;
+    font-weight: 600;
+}
+.terms-condition .content{
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+    color: rgb(156, 156, 156);
+}

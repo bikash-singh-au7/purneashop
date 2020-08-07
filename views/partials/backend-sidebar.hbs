@@ -1,66 +1,70 @@
 <nav id="sidebar">
-            <div class="sidebar-header">
-                <img class="img img-fluid" src="/images/logo/logo.png">
-            </div>
+    <div class="sidebar-header">
+        <img class="img img-fluid" src="/images/logo/logo.png">
+    </div>
 
-            <ul class="list-unstyled components">
-                <!--Dashboad Setup-->
-                <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fa fa-home" id="fa"></i> Dashboard</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="/admin/home">Dashboard</a>
-                        </li>
-
-                    </ul>
-                </li>
-                <!--Session Setup-->
+    <ul class="list-unstyled components">
+        <!--Dashboad Setup-->
+        <li class="active">
+            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i class="fa fa-home" id="fa"></i> Dashboard</a>
+            <ul class="collapse list-unstyled" id="homeSubmenu">
                 <li>
-                    <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fa fa-calendar" id="fa"></i> Category</a>
-                    <ul class="collapse list-unstyled" id="categorySubmenu">
-                        <li> <a href="/admin/category"><i class="fa fa-cog"
-                                    id="fa"></i>Manage Category</a> </li>
-                    </ul>
+                    <a href="/admin/home">Dashboard</a>
                 </li>
 
-
-                <!--Product Setup-->
-                <li>
-                    <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fa fa-list" id="fa"></i> Product</a>
-                    <ul class="collapse list-unstyled" id="productSubmenu">
-                        <li> <a href="/admin/products"><i class="fa fa-cog" id="fa"></i> Manage Product</a> </li>
-                    </ul>
-                </li>
-
-
-                <!--Users Setup-->
-                <li>
-                    <a href="#usersSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fa fa-user" id="fa"></i> Users</a>
-                    <ul class="collapse list-unstyled" id="usersSubmenu">
-                        <li> <a href="/admin/users"><i class="fa fa-cog" id="fa"></i> Manage Users</a> </li>
-                    </ul>
-                </li>
-
-                <!--Order Setup-->
-                <li>
-                    <a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fa fa-user" id="fa"></i> Orders</a>
-                    <ul class="collapse list-unstyled" id="orderSubmenu">
-                        <li> <a href="/admin/pendingOrders"><i class="fa fa-cog" id="fa"></i> Pending Orders</a> </li>
-                        <li> <a href="/admin/unshippedOrders"><i class="fa fa-cog" id="fa"></i> Unshipped Orders</a> </li>
-                        <li> <a href="/admin/shippedOrders"><i class="fa fa-cog" id="fa"></i> Shipped Orders</a> </li>
-                    </ul>
-                </li>
+            </ul>
+        </li>
+        <!--Session Setup-->
+        <li>
+            <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i class="fa fa-calendar" id="fa"></i> Category</a>
+            <ul class="collapse list-unstyled" id="categorySubmenu">
+                <li> <a href="/admin/category"><i class="fa fa-cog" id="fa"></i>Manage Category</a> </li>
+            </ul>
+        </li>
 
 
+        <!--Product Setup-->
+        <li>
+            <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i class="fa fa-list" id="fa"></i> Product</a>
+            <ul class="collapse list-unstyled" id="productSubmenu">
+                <li> <a href="/admin/products"><i class="fa fa-cog" id="fa"></i> Manage Product</a> </li>
+            </ul>
+        </li>
 
 
-                <!--Batch Setup-->
-                {{!-- <li>
+        <!--Users Setup-->
+        <li>
+            <a href="#usersSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i class="fa fa-user" id="fa"></i> Users</a>
+            <ul class="collapse list-unstyled" id="usersSubmenu">
+                <li> <a href="/admin/users"><i class="fa fa-cog" id="fa"></i> Manage Users</a> </li>
+            </ul>
+        </li>
+
+        <!--Order Setup-->
+        <li>
+            <a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i class="fa fa-user" id="fa"></i> Orders</a>
+            <ul class="collapse list-unstyled" id="orderSubmenu">
+                <li> <a href="/admin/pendingOrders"><i class="fa fa-cog" id="fa"></i> Pending Orders</a> </li>
+                <li> <a href="/admin/unshippedOrders"><i class="fa fa-cog" id="fa"></i> Unshipped Orders</a> </li>
+                <li> <a href="/admin/shippedOrders"><i class="fa fa-cog" id="fa"></i> Shipped Orders</a> </li>
+            </ul>
+        </li>
+
+        <!--Offline Order-->
+        <li>
+            <a href="/admin/offlineOrder"><i class="fa fa-cog" id="fa"></i>Offline Order</a>
+        </li>
+
+
+
+
+        <!--Batch Setup-->
+        {{!-- <li>
                     <a href="#batchSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <i class="fa fa-users" id="fa"></i>Batches</a>
                     <ul class="collapse list-unstyled" id="batchSubmenu">
@@ -183,5 +187,5 @@
                 <li><a href="https://vijayphysics.com/HelpSupport"> <i class="fa fa-question-circle" id="fa"></i> Help &
                         Support</a></li> --}}
 
-            </ul>
-        </nav>
+    </ul>
+</nav>
