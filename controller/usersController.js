@@ -434,7 +434,7 @@ controller.updateCart = (req, res, next) => {
                 if (cart.length == 1) {
                     delete req.session.cart;
                 } else {
-                    cart.splice(i, i);
+                    cart.splice(i, i+1);
                 }
             }
 

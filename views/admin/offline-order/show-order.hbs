@@ -1,0 +1,351 @@
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-10 m-auto p-0">
+            {{#if success}}
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 m-auto alert alert-success">
+                        {{success}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            {{#if error}}
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 m-auto alert alert-dange">
+                        {{error}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            {{#if list.length}}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 p-0">
+                        <h5 class="text-light my-3 bg-info px-2 py-2 h6">Offlines Orders</h5>
+                        <div id="accordion">
+                            {{#each list as |item|}}
+                            <div class="card mb-1 bg-white" id="row-{{item._id}}">
+                                <div class="card-header bg-white" id="headingOne{{@index}}">
+                                    <div class="mb-0">
+                                        <div class="title text-info">
+                                            <span> {{@index}} ) {{item.customer_name}} (<span
+                                                    class="badge badge-success">{{item.order_status}}</span> )
+
+                                        </div>
+                                        <div class="toggle-button text-right mt-2">
+                                            <button class="btn btn-warning m-0 py-0 px-2 mr-2" data-toggle="collapse"
+                                                data-target="#collapseOne{{@index}}" aria-expanded="true"
+                                                aria-controls="collapseOne">
+                                                <i class="fa fa-angle-down"></i>
+                                            </button>
+                                            <button onclick="orderConfirmed('{{item._id}}')"  title="Confirmed"
+                                                class="btn btn-success px-2 py-0 mr-2"> <i class="fa fa-check"></i> </button>
+
+                                            <button onclick="orderDelivered('{{item._id}}')" title="Delivered"
+                                                class="btn btn-primary px-2 py-0 mr-2"> <i class="fa fa-truck"></i> </button>
+
+                                            <button onclick="deleteData('{{item._id}}')" title="Delete"
+                                                class="btn btn-danger px-2 py-0"> <i class="fa fa-trash"></i> </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="collapseOne{{@index}}" class="collapse" aria-labelledby="headingOne{{@index}}"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12 p-0">
+                                                <div class="video-sections">
+                                                    <div class="container">
+                                                        <div class="row table-responsive">
+                                                            <table class="table table-striped h6">
+                                                                <tr>
+                                                                    <th class="h6 px-1 py-1 m-0">SN</th>
+                                                                    <th class="h6 px-1 py-1 m-0">Name</th>
+                                                                    <th class="h6 px-1 py-1 m-0">Quantity</th>
+                                                                    <th class="h6 px-1 py-1 m-0">Price</th>
+                                                                    <th class="h6 px-1 py-1 m-0">Subtotal</th>
+                                                                </tr>
+
+                                                                {{#each item.cart as |cart|}}
+                                                                <tr>
+                                                                    <th class="h6 p-1">{{@index}}</th>
+                                                                    <th class="h6 p-1"> <a target="_blank"
+                                                                            href="/products/{{cart.product_slag}}">
+                                                                            {{cart.product_name}} </a> </th>
+                                                                    <th class="h6 p-1"> {{cart.qty}} </th>
+                                                                    <th class="h6 p-1"> {{cart.product_price}} </th>
+                                                                    <th class="h6 p-1"> {{cart.subtotal}} </th>
+
+                                                                </tr>
+
+                                                                {{/each}}
+                                                                <tr>
+                                                                    <td colspan="5" align="right" class="h6"> Total
+                                                                        Amount <i class="fa fa-inr"></i>
+                                                                        {{item.total_amount}} </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="5" align="right" class="h6"> Order Date
+                                                                        : {{item.order_date}} </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td colspan="5" align="right" class="text-info h6">
+                                                                        Address :{{item.address.address}},
+                                                                        {{item.address.landmark}},
+                                                                        {{item.address.pincode}},
+                                                                        <a class="badge badge-info"
+                                                                            href="tel:{{item.address.user_mobile}}">
+                                                                            {{item.address.user_mobile}} </a> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="5" align="right" class="text-info h6">
+                                                                        Mobile No:
+                                                                        <a class="badge badge-info"
+                                                                            href="tel:{{item.user_mobile}}">
+                                                                            {{item.user_mobile}} </a> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="5" align="right" class="text-info h6">
+                                                                        Order Id: {{item._id}}
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{else}}
+            <div class="alert alert-danger">
+                There is no Pending Order
+            </div>
+            {{/if}}
+
+            <!--Delete Modal---->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title text-info" id="deleteSessionlabel"> <i class="fa fa-trash"></i>
+                                Delete Category</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img class="img img-responsive" height=80
+                                src="https://vijayphysics.com/assets/images/danger.png" alt="">
+                            <h5 class="text-muted h6">Do you want to delete?</h5>
+                        </div>
+                        <div class="m-auto pb-2">
+                            <form action="" method="post" id="deleteForm">
+                                <input type="hidden" value="" name="order_id" id="delete_order_id">
+                                <button type="submit" class="btn btn-danger" name="delSbmt">Delete
+                                    <img id="deleteLoader" style="display:none" src="/images/loader/ajax-loader.gif"
+                                        alt="">
+                                </button>
+                                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Delivered Modal---->
+            <div class="modal fade" id="deliveredModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title text-info" id="deleteSessionlabel"> <i class="fa fa-cog"></i>
+                                Deivered Order</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h1> <i class="fa fa-check text-info"></i> </h1>
+                            <h5 class="text-muted h6">Is Item Delivered?</h5>
+                        </div>
+                        <div class="m-auto pb-2">
+                            <form action="" method="post" id="deliveredForm">
+                                <input type="hidden" value="" name="order_id" id="delivered_order_id">
+                                <button type="submit" class="btn btn-danger">Yes
+                                    <img id="deliveredLoader" style="display:none" src="/images/loader/ajax-loader.gif"
+                                        alt="">
+                                </button>
+                                <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Confirm Modal---->
+            <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title text-info" id="deleteSessionlabel"> <i class="fa fa-cog"></i>
+                                Confirm Order</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h1> <i class="fa fa-check text-info"></i> </h1>
+                            <h5 class="text-muted h6">Is Item Confirmed?</h5>
+                        </div>
+                        <div class="m-auto pb-2">
+                            <form action="" method="post" id="confirmForm">
+                                <input type="hidden" value="" name="order_id" id="confirm_order_id">
+                                <button type="submit" class="btn btn-danger">Yes
+                                    <img id="confirmLoader" style="display:none" src="/images/loader/ajax-loader.gif"
+                                        alt="">
+                                </button>
+                                <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    //delete
+    function deleteData(id) {
+        $("#deleteModal").modal("show");
+        $("#delete_order_id").val(id);
+    }
+
+    $(document).ready(function () {
+        $("body").on("submit", "#deleteForm", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/admin/orderDelete',
+                type: 'DELETE',
+                data: $(this).serialize(),
+                dataType: 'json',
+                beforeSend: function () {
+                    $("#deleteLoader").show();
+                },
+                complete: function () {
+                    $("#deleteLoader").hide();
+                },
+                success: function (response) {
+                    if (response["status"]) {
+                        $("#" + response.rowId).remove();
+                        $("#deleteModal").modal("hide");
+                    } else {
+                        $("#deleteModal").modal("hide");
+                    }
+                    Swal.fire(
+                        response["title"],
+                        response["message"],
+                        response["modal"]
+                    );
+                }
+            });
+        })
+    });
+
+
+    //Delevered
+    function orderDelivered(id) {
+        $("#deliveredModal").modal("show");
+        $("#delivered_order_id").val(id);
+    }
+
+    $(document).ready(function () {
+        $("body").on("submit", "#deliveredForm", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/admin/orderDelevered',
+                type: 'PUT',
+                data: $(this).serialize(),
+                dataType: 'json',
+                beforeSend: function () {
+                    $("#deliveredLoader").show();
+                },
+                complete: function () {
+                    $("#deliveredLoader").hide();
+                },
+                success: function (response) {
+                    if (response["status"]) {
+                        $("#" + response.rowId).remove();
+                        $("#deliveredModal").modal("hide");
+                    } else {
+                        $("#deliveredModal").modal("hide");
+                    }
+                    Swal.fire(
+                        response["title"],
+                        response["message"],
+                        response["modal"]
+                    );
+                }
+            });
+        })
+    });
+
+
+    //Confirmed
+    function orderConfirmed(id) {
+        $("#confirmModal").modal("show");
+        $("#confirm_order_id").val(id);
+    }
+
+    $(document).ready(function () {
+        $("body").on("submit", "#confirmForm", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/admin/orderConfirm',
+                type: 'PUT',
+                data: $(this).serialize(),
+                dataType: 'json',
+                beforeSend: function () {
+                    $("#confirmLoader").show();
+                },
+                complete: function () {
+                    $("#confirmLoader").hide();
+                },
+                success: function (response) {
+                    if (response["status"]) {
+                        $("#" + response.rowId).remove();
+                        $("#confirmModal").modal("hide");
+                    } else {
+                        $("#confirmModal").modal("hide");
+                    }
+                    Swal.fire(
+                        response["title"],
+                        response["message"],
+                        response["modal"]
+                    );
+                }
+            });
+        })
+    });
+
+</script>

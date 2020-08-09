@@ -1,3 +1,65 @@
+<script>
+
+    function minus(val) {
+        let parent = val.parentNode;
+        let value = Number(parent.querySelector('input').value)
+        if (value <= 1) {
+            parent.querySelector('input').value = 1
+        } else {
+            value -= 1;
+            parent.querySelector('input').value = value;
+        }
+    }
+
+
+    function plus(val) {
+        let parent = val.parentNode;
+        let value = Number(parent.querySelector('input').value)
+        value += 1;
+        parent.querySelector('input').value = value;
+
+    }
+
+
+    function addToCart(val) {
+        let parent = val.parentNode;
+        let qty = Number(parent.querySelector('input').value)
+        let url = val.value;
+        $.ajax({
+            url: url,
+            data: { qty: qty },
+            type: "GET",
+            dataType: "json",
+            beforeSend: function () {
+                parent.querySelector('#cartLoader').style.display = 'inline';
+            },
+            complete: function () {
+                parent.querySelector('#cartLoader').style.display = 'none';
+            },
+            success: function (response) {
+                if (response["status"]) {
+                    parent.querySelector('#cartLoader').style.display = 'none';
+                    //parent.querySelector('.add-to-kart').innerHTML = 'Added';
+                    let tableData = "<tr><th>Item Name</th><th>Quantity</th><th>Price</th><th>Total</th><th></th></tr>";
+                    let total = 0;
+                    for (let i = 0; i < response["cart"].length; i++) {
+                        let subtotal = (response["cart"][i].product_price * response["cart"][i].qty).toFixed(2);
+                        total += Number(subtotal);
+                        tableData += "<tr> <td> </button> " + response["cart"][i].product_name + " </td> <td> " + response["cart"][i].qty + " </td> <td> " + response["cart"][i].product_price + " </td> <td> " + subtotal + " </td> <td><button class='btn btn-info px-2 py-1'> <a href='/admin/updateCart/" + i + "?action=remove'> <i class='fa fa-trash'> </i> </a> </button> </td></tr>"
+                    }
+                    tableData += "<tr> <td align='right' colspan='4'> Total : <i class='fas fa-rupee-sign'></i> " + Math.round(total).toFixed(2) + " </td> </tr>";
+                    $("#cartTable").html(tableData);
+
+                }
+            }
+        });
+
+
+    }
+
+
+</script>
+
 <div class="container-fluid mt-2">
     <div class="row">
         <div class="col-md-12">
@@ -28,7 +90,8 @@
                                                 </div>
                                             </div>
                                             <input type="search" class="form-control pl-0" id="search_query"
-                                                name="search_query" placeholder="Search Here!!" autofocus>
+                                                name="search_query" placeholder="Search Here!!" autofocus
+                                                autocomplete="off">
                                         </div>
                                     </form>
                                 </div>
@@ -51,6 +114,7 @@
 
                     <h6 class="text-center text-info"> OR</h6>
 
+                    {{!-- Manual Form --}}
                     <form action="" id="manualForm">
                         <div class="form-group">
                             <div class="input-group mb-2">
@@ -59,8 +123,8 @@
                                         Item
                                     </div>
                                 </div>
-                                <input type="text" class="form-control pl-2" id="search_query" name="product_name"
-                                    placeholder="Item Name !!">
+                                <input type="text" class="form-control pl-2" id="product_name" name="product_name"
+                                    placeholder="Item Name !!" required>
                             </div>
 
                             <div class="input-group mb-2">
@@ -69,7 +133,7 @@
                                         Qnty
                                     </div>
                                 </div>
-                                <input type="text" class="form-control pl-2" id="search_query" name="product_qty"
+                                <input type="text" class="form-control pl-2" id="product_qty" name="product_qty"
                                     placeholder="Quantity !!">
                             </div>
 
@@ -79,12 +143,15 @@
                                         Price
                                     </div>
                                 </div>
-                                <input type="text" class="form-control pl-2" id="search_query" name="product_price"
+                                <input type="text" class="form-control pl-2" id="product_price" name="product_price"
                                     placeholder="Price !!">
                             </div>
 
                             <div class="">
-                                <button class="btn-info btn rounded-0 border-0">Add</button>
+                                <button class="btn-info btn rounded-0 border-0">
+                                    Add <img id="manualLoader" style="display: none;"
+                                        src="/images/loader/ajax-loader.gif" alt="">
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -93,24 +160,108 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        {{!-- cart preview --}}
+        <div class="col-md-6 offline-order-table">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    hh
+
+                    <table class="table table-stripped" id="cartTable">
+                        {{#if cart.length}}
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        {{#each cart as |item|}}
+                        <tr>
+                            <td>
+
+                                {{item.product_name}}
+                            </td>
+                            <td> {{item.qty}} </td>
+                            <td> {{item.product_price}} </td>
+                            <td> {{item.subtotal}} </td>
+                            <td>
+                                <button class="btn btn-info px-2 py-1">
+                                    <!--
+                                    <a href="/users/updateCart/{{this.product_slag}}?action=remove">
+                                        <i class='fa fa-trash'> </i>
+                                    </a>
+                                    -->
+
+                                    <a href='/admin/updateCart/{{@index}}?action=remove'> <i class='fa fa-trash'> </i> </a>
+                                </button>
+                            </td>
+                        </tr>
+                        {{/each}}
+                        <tr>
+                            <td colspan="4" align="right"> Total: <i class='fas fa-rupee-sign'></i>{{total}} </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+
+                            </td>
+
+                        </tr>
+                        {{/if}}
+                    </table>
+                    <div class="button">
+                        {{!-- Order Button --}}
+                        <button type="button" class="btn btn-info border-0 rounded-0 ox-2 py-1 text-sm" data-toggle="modal" data-target="#orderModel">
+                            Order Now </button>
+
+                        {{!-- Claer Cart Button --}}
+                        <button type="button" class="btn btn-danger border-0 rounded-0 ox-2 py-1 text-sm" id="clearCart">
+                            Clear Cart <img id="clearManualLoader" style="display: none;"
+                                src="/images/loader/ajax-loader.gif" alt="">
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="orderModel" tabindex="-1" role="dialog" aria-labelledby="orderModelLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="orderModelLabel">Order Person</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="offlineOrderForm">
+                    <div class="form-group">
+                        <Label>Customer name</Label>
+                        <input type="text" name="customer_name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <Label>Customer Mobile</Label>
+                        <input type="tel" name="customer_mobile" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <Label>Customer Addeess</Label>
+                        <input type="text" name="customer_address" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="offlineOrderForm" class="btn btn-info border-0 rounded-0">Submit</button>
+                <button type="button" class="btn btn-danger border-0 rounded-0" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-
-    $(".quantity").on("click", "#plus", function () {
-        alert("+")
-
-    });
-
-     $("#search_query").on("keyup", function () {
+    $("#search_query").on("keyup", function () {
         let q = $(this).val();
         if (q.length > 0) {
             $.ajax({
@@ -128,7 +279,7 @@
                     if (response["isData"]) {
                         let html = "";
                         for (let i = 0; i < response["list"].length; i++) {
-                            html = html + "<div class='p-2 border-bottom'> <a href='/products/" + response["list"][i].product_slag + "'>" + response["list"][i].product_name + "</a> <button class='rr' on></button>";
+                            html = html + "<div class='border-bottom p-2 offline-order-form'> <a href='/products/" + response["list"][i].product_slag + "'>" + response["list"][i].product_name + "<span class='text-info'> <i class='fas fa-rupee-sign'></i> " + response["list"][i].product_price + "</a> </span>    <div class='quantity'><button id='minus' onclick='minus(this)'>-</button><input type='text' id='quantity' value='1'><button id='plus' onclick='plus(this)'>+</button> <button onclick='addToCart(this)' class='btn btn-info border-0 rounded-0 add-to-kart' value='/users/addToCart/" + response["list"][i].product_slag + "'> Add to Cart <img id='cartLoader' style='display:none' src='/images/loader/ajax-loader.gif'></button></div> </div>";
                         }
                         $("#itemContainer").html(html);
                     } else {
@@ -140,12 +291,87 @@
         } else {
             $("#itemContainer").html('');
         }
+    });
 
+
+    $("#manualForm").submit(function (event) {
+        event.preventDefault();
+        console.log($(this).serialize())
+        $.ajax({
+            url: "/admin/manualOrder",
+            data: $(this).serialize(),
+            type: "POST",
+            dataType: "json",
+            beforeSend: function () {
+                $("#manualLoader").show();
+            },
+            complete: function () {
+                $("#manualLoader").hide();
+            },
+            success: function (response) {
+                if (response["status"]) {
+                    $("#manualLoader").hide();
+                    //parent.querySelector('.add-to-kart').innerHTML = 'Added';
+                    let tableData = "<tr><th>Item Name</th><th>Quantity</th><th>Price</th><th>Total</th><th></th></tr>";
+                    let total = 0;
+                    for (let i = 0; i < response["cart"].length; i++) {
+                        let subtotal = (response["cart"][i].product_price * response["cart"][i].qty).toFixed(2);
+                        total += Number(subtotal);
+                        tableData += "<tr> <td> </button> " + response["cart"][i].product_name + " </td> <td> " + response["cart"][i].qty + " </td> <td> " + response["cart"][i].product_price + " </td> <td> " + subtotal + " </td> <td><button class='btn btn-info px-2 py-1'> <a href='/admin/updateCart/" + i + "?action=remove'> <i class='fa fa-trash'> </i> </a> </button> </td></tr>"
+                    }
+                    tableData += "<tr> <td align='right' colspan='4'> Total : <i class='fas fa-rupee-sign'></i> " + Math.round(total).toFixed(2) + " </td> </tr>";
+                    $("#cartTable").html(tableData);
+                }
+            }
+        });
+    });
+
+
+    $("#clearCart").click(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "/admin/clearManualOrder",
+            data: {},
+            type: "POST",
+            dataType: "JSON",
+            beforeSend: function () {
+                $("#clearManualLoader").show();
+            },
+            complete: function () {
+                $("#clearManualLoader").hide();
+            },
+            success: function(response){
+                if(response.status){
+                    let tableData = "<tr><td colspan='5' align='center' class='text-danger'>"+response['value']+"</td></tr>";
+                    $("#cartTable").html(tableData);
+                }
+            }
+        });
     })
 
 
-
-    $(".rr").click(function(){
-        alert("rr")
+    $("#offlineOrderForm").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "/admin/getOfflineOrder",
+            data: $(this).serialize(),
+            type: "POST",
+            dataType: "JSON",
+            beforeSend: function () {
+                $("#clearManualLoader").show();
+            },
+            complete: function () {
+                $("#clearManualLoader").hide();
+            },
+            success: function(response){
+                if(response.status){
+                    $(".form-control").val('');
+                    $("#orderModel").modal("hide");
+                    let tableData = "<tr><td colspan='5' align='center' class=' h5 text-success'>"+response['value']+"</td></tr>";
+                    $("#cartTable").html(tableData);
+                }
+            }
+        });
     })
+
 </script>

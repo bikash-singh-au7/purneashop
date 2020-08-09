@@ -4,6 +4,7 @@ const categoryModel = require("../models/categoryModel");
 const productModel = require("../models/productModel");
 const addressModel = require("../models/addressModel");
 const userModel = require("../models/userModel");
+const offlineOrderModel = require("../models/offlineOrderModel");
 const orderModel = require("../models/orderModel");
 const multer = require("multer");
 const { check, validationResult } = require('express-validator');
@@ -742,12 +743,112 @@ controller.saveData = (req, res, next) => {
 };
 
 controller.offlineOrder = (req, res, next) => {
-    if (!req.session.admin) return res.redirect("/admin");
-    res.render("admin/offline-order/order", {layout: "backend"});
-
-    
+    // if (!req.session.admin) return res.redirect("/admin");
+    let cart = req.session.cart || [];
+    let total = 0;
+    for (let i = 0; i < cart.length; i++) {
+        let subtotal = 0;
+        subtotal = cart[i].product_price * cart[i].qty;
+        cart[i].subtotal = Number(subtotal).toFixed(2);
+        total += Number(subtotal)
+    }
+    total = Math.round(total).toFixed(2)
+    res.render("admin/offline-order/order", { layout: "backend", cart: cart, total: total });
 };
 
+
+// Offline Order
+controller.getOfflineOrder = (req, res)=>{
+    const body = req.body;
+    const cart = req.session.cart;
+
+    let total = 0;
+    for(let i=0; i<cart.length; i++){
+        total += cart[i].qty * cart[i].product_price
+    }
+    total = Math.round(total).toFixed(2);
+
+    body.total_amount = total;
+    body.cart = cart;
+
+    const offlineData = new offlineOrderModel(body);
+    offlineData.save((err, data) => {
+        if (!err) {
+            delete req.session.cart;
+            return res.send({status: true, value: "Order Done !!"});
+        }
+        else {
+            return res.send({status: false, value: err});
+        }
+    });
+}
+
+controller.manualOrder = (req, res) => {
+    let cart = req.session.cart;
+    let name = req.body.product_name;
+    let data = req.body;
+    let newItem = true;
+    if (typeof req.session.cart == "undefined") {
+        req.session.cart = [];
+        req.session.cart.push(
+            {
+                product_name: data.product_name,
+                product_price: data.product_price,
+                qty: data.product_qty,
+            }
+        )
+    }else{
+        req.session.cart.push(
+            {
+                product_name: data.product_name,
+                product_price: data.product_price,
+                qty: data.product_qty,
+            }
+        )
+    }
+    res.send({ status: true, value: 'Product Added', cart: req.session.cart });
+}
+
+
+// Clear Manual Order
+controller.clearManualOrder = (req, res) => {
+    if (typeof req.session.cart == "undefined") {
+        return res.send({ status: true, value: 'Nothing to Clear !!', cart: req.session.cart });
+    }else{
+        delete req.session.cart;
+        return res.send({ status: true, value: 'All Items Removed!!', cart: req.session.cart });
+    }
+    
+}
+
+// Update Cart
+controller.updateCart = (req, res)=>{
+    let cart = req.session.cart;
+    let action = req.query.action;
+    let index = req.params.index;
+    console.log(cart);
+    cart.splice(index, 1);
+    req.flash("success", "Cart Updated");
+    res.redirect("back");
+}
+
+
+// Show Offline Orders
+controller.showOfflineOrder = (req, res)=>{
+    offlineOrderModel.find((err, data)=>{
+        if(!err){
+            for(let i=0; i<data.length; i++){
+                
+            }
+
+            console.log(data);
+
+            return res.render('admin/offline-order/show-order', { layout: "backend", list: data});
+        }else{
+            return res.render('admin/offline-order/show-order', { layout: "backend", list: []});
+        }
+    }).lean()
+}
 
 
 module.exports = controller;

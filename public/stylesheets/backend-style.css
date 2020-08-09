@@ -1,0 +1,33 @@
+.offline-order-form .quantity{
+ text-align: right;
+}
+.offline-order-form a{
+ font-size: 14px;
+ font-weight: 500;
+}
+.offline-order-form #plus, #minus{
+    background-color: #17a2b8;
+    color: #fff;
+    border: none;
+    outline: none;
+}
+.offline-order-form #quantity{
+    width: 40px;
+    background-color: wheat;
+    text-align: center;
+    border: none;
+    outline: none;
+}
+.offline-order-form .add-to-kart{
+    background-color: #17a2b8;
+    color: #fff;
+    padding: 4px;
+    font-size: 13px;
+    border: none;
+    outline: none;
+}
+
+/* offline-order-table */
+.offline-order-table{
+    font-size: 14px;
+}
