@@ -316,7 +316,7 @@ controller.yourCart = (req, res, next) => {
         }
     }
 
-    if (totalAmount < 400) {
+    if (totalAmount < 500) {
         order = false;
     }
     res.render("users/cart", { cart: cart, success: req.flash("success"), totalAmount: totalAmount, order: order });
