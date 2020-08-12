@@ -32,6 +32,9 @@ router.post('/verifyForgotOtp', userController.verifyForgotOtp);
 router.get('/createPasswordForm', userController.createPasswordForm);
 router.post('/createPassword', userController.createPassword);
 
+// Cancel Order
+router.post("/orderCancel", isLoggedIn, userController.orderCancel);
+
 router.get("/sms", (req, res) => {
   //Authentication Key 
   var authkey = '224991AuVykO8pSsz5b4313bf';

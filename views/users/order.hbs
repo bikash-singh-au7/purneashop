@@ -42,16 +42,27 @@
                                 <div class="card-header bg-white border-0" id="headingOne{{@index}}">
                                     <div class="mb-0">
                                         <div class="title float-left text-info h6">
-                                            <span> {{item.sn}} ) {{item.name}} (<span
-                                                    class="badge badge-success">{{item.order_status}}</span> )
+                                            <span> {{item.sn}} ) {{item.name}} (
+                                                {{#if item.isCancled}}
+                                                    <span class="badge badge-danger" id="orderStatus-{{item._id}}">{{item.order_status}}</span>
+                                                {{else}}
+                                                    <span class="badge badge-success" id="orderStatus-{{item._id}}">{{item.order_status}}</span>
+                                                {{/if}}
+                                                 )
 
                                         </div>
                                         <div class="toggle-button float-right">
-                                            <button class="btn btn-info m-0 py-0 px-3" data-toggle="collapse"
+                                            <button class="btn btn-info m-0 py-0 px-2" data-toggle="collapse"
                                                 data-target="#collapseOne{{@index}}" aria-expanded="true"
                                                 aria-controls="collapseOne">
                                                 <i class="fa fa-angle-down"></i>
                                             </button>
+                                            {{#if item.isCancel}}
+                                            <button class="btn btn-danger m-0 py-0 px-2" type="button"
+                                                data-toggle="modal" data-target="#OrderCancelModal" onclick="getId('{{item._id}}')" id="cancelButton-{{item._id}}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                            {{/if}}
                                         </div>
                                     </div>
                                 </div>
@@ -133,3 +144,69 @@
         </div>
     </div>
 </div>
+
+{{!-- Cancled confirmation modal --}}
+<div class="modal fade" id="OrderCancelModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Do You Want to Cancled ?</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="orderCancelForm">
+                    <input type="hidden" name="orderId" value="" id="orderId">
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}" class="form-control">    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="orderCancelForm" class="btn btn-info">Yes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const getId = (id)=>{
+        $("#orderId").val(id);
+    }
+    $("body").on("submit", "#orderCancelForm", function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: '/users/orderCancel',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            success: function (response) {
+                $("#OrderCancelModal").modal("hide");
+                if (response["status"] == 0) {
+                    //set error message 
+                    Swal.fire(
+                        response["title"],
+                        response["message"],
+                        response["modal"]
+                    );
+                } else {
+                    $("#cancelButton-"+response.orderId).hide();
+                    $("#orderStatus-"+response.orderId).html('Canceled').removeClass("badge-success").addClass("badge-danger");
+
+                    Swal.fire(
+                        response["title"],
+                        response["message"],
+                        response["modal"]
+                    );
+                }
+            }
+        });
+    });
+</script>

@@ -6,6 +6,7 @@ const orderModel = require("../models/orderModel");
 const productModel = require("../models/productModel");
 const { router } = require("../app");
 const msg91 = require('msg91-sms');
+const { Mongoose } = require("mongoose");
 
 // Create a blank controller
 const controller = {};
@@ -455,25 +456,32 @@ controller.order = async (req, res, next) => {
             data[i].shipped_date = shippedDate;
             data[i].sn = i + 1;
             let status = "Pending";
-            if (data[i].order_status == 1) {
-                status = "Confirm";
+            let isCancel = 0;
+            let isCancled = 0;
+            if (data[i].order_status == 0) {
+                status = "Pending";
+                isCancel = 1;
+            }else if (data[i].order_status == 1) {
+                status = "Confirmed";
+                isCancel = 1;
             } else if (data[i].order_status == 2) {
                 status = "Delevered";
             } else if (data[i].order_status == 3) {
                 status = "Canceled";
+                isCancled = 1;
             }
             data[i].order_status = status;
-
-
+            data[i].isCancel = isCancel;
+            data[i].isCancled = isCancled;
 
             const address = await addressModel.findOne({ _id: data[i].address }).lean();
             data[i].address = address.user_name + ",(" + address.address + "," + address.landmark + "," + address.pincode + ")";
             data[i].name = address.user_name;
         }
-        return res.render('users/order', { list: data, title: 'Online Grocery', message: req.flash("success") });
+        return res.render('users/order', { list: data, csrfToken: req.csrfToken(), title: 'Online Grocery', message: req.flash("success") });
     } catch (e) {
         console.log("Order Page Error", e)
-        return res.render('users/order', { list: [], title: 'Online Grocery', message: ["Oops Error Occured"] });
+        return res.render('users/order', { list: [], csrfToken: req.csrfToken(), title: 'Online Grocery', message: ["Oops Error Occured"] });
     }
 
 }
@@ -558,5 +566,54 @@ controller.account = (req, res, next) => {
     res.render("users/account");
 }
 
+// Cancel order
+controller.orderCancel = (req, res, next) => {
+    const order_id = req.body.orderId;
+    orderModel.findByIdAndUpdate({ _id: order_id }, { order_status: 3 }, (err, data) => {
+        if (!err) {
+            userModel.findOne({ _id: data.user_id }, (e, user) => {
+                if (!e) {
+                    //Authentication Key 
+                    var authkey = '224991AuVykO8pSsz5b4313bf';
+
+                    //for single number
+                    var number = user.user_mobile;;
+
+                    //message
+                    const msg = "Hii " + user.user_name + " Your Order is Canceled order Id is: " + data._id + ", Thanks for Choosing www.purneashop.com. Team PurneaShop.";
+
+                    //Sender ID
+                    var senderid = 'PUSHOP';
+
+                    //Route
+                    var route = '4';
+
+                    //Country dial code
+                    var dialcode = '91';
+                    //send to single number
+                    // if (!user_info === undefined) {
+
+                    // }
+                    msg91.sendOne(authkey, number, msg, senderid, route, dialcode, function (response) {
+                        //Returns Message ID, If Sent Successfully or the appropriate Error Message
+                        if (/^[a-zA-Z0-9]{24}$/g.test(response)) {
+                            // req.flash({success:"OTP Send Successfuy !"});
+                            console.log("mobile", number, "sms", response);
+                            return res.send({ orderId: order_id, status: 1, title: "Done", message: "Updated Successfully!", modal: "success" });
+                        } else {
+                            return res.send({status: 1, orderId: order_id, title: "Done", message: "Order Canceled!", modal: "success" });
+                        }
+
+                    });
+                } else {
+                    return res.send({ status: 1, orderId: order_id, title: "Done", message: "Order Canceled, But Message Not Send!", modal: "success" });
+                }
+            })
+        } else {
+            return res.send({ status: 0, orderId: order_id, title: "Oops Error", message: "Data Does Not Updated", modal: "error" });
+        }
+    });
+
+}
 
 module.exports = controller;
