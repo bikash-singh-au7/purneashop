@@ -428,6 +428,63 @@ controller.todayShippedOrders = async (req, res, next) => {
 }
 
 
+// Update Order
+controller.updateOrder = async (req, res, next) => {
+    if (!req.session.admin) return res.redirect("/admin");
+    const orderId = req.params.orderId;
+    try {
+        const orderData = await orderModel.findOne({ _id: orderId }).lean();
+        const user_id = orderData.user_id;
+        const users = await userModel.findOne({ _id: user_id }).lean();
+        let cart = orderData.cart;
+        if (req.session.cart === undefined || req.session.cart.length < 1) {
+            req.session.cart = cart;
+        }
+        cart = req.session.cart;
+        let total = 0;
+        for (let i = 0; i < cart.length; i++) {
+            let subtotal = 0;
+            subtotal = cart[i].product_price * cart[i].qty;
+            cart[i].subtotal = Number(subtotal).toFixed(2);
+            total += Number(subtotal)
+        }
+        total = Math.round(total).toFixed(2)
+        return res.render("admin/orders/update-order", { layout: "backend", list: orderData, cart: cart, user: users, total: total});
+    } catch (e) {
+        res.send(e);
+    }
+}
+controller.getUpdateOrder = async (req, res, next) => {
+    if (!req.session.admin) return res.redirect("/admin");
+    const orderId = mongoose.Types.ObjectId(req.params.orderId);
+    console.log("order================>",orderId)
+    try{
+        const orderData = await orderModel.findOne({ _id: orderId }).lean();
+        let cart = req.session.cart;
+        let total = 0;
+        for (let i = 0; i < cart.length; i++) {
+            let subtotal = 0;
+            subtotal = cart[i].product_price * cart[i].qty;
+            cart[i].subtotal = Number(subtotal).toFixed(2);
+            total += Number(subtotal)
+        }
+        total = Math.round(total).toFixed(2)
+        orderData.cart = req.session.cart;
+        orderData.total_amount = total;
+        orderModel.updateOne({_id: orderId}, orderData, (err, data)=>{
+            if(!err){
+                res.send({status:1, value:"Order Updated SuccessFully"});
+            }else{
+                res.send({status:0, value:"Order Does't Updated"});
+            }
+        })
+    }catch(e){
+        console.log(e)
+        res.send({error: e});
+    }
+}
+
+
 
 controller.addCategory = (req, res, next) => {
     if (!req.session.admin) return res.redirect("/admin");
@@ -537,6 +594,7 @@ controller.updateProduct = async (req, res, next) => {
     req.checkBody("product_desc", "Required Field").notEmpty();
     req.checkBody("product_slag", "Required Field").notEmpty();
     req.checkBody("product_price", "Required Field").notEmpty();
+    req.checkBody("purchase_price", "Required Field").notEmpty();
     req.checkBody("product_mrp", "Required Field").notEmpty();
     req.checkBody("product_status", "Required Field").notEmpty();
     req.checkBody("product_category", "Required Field").notEmpty();
@@ -575,6 +633,7 @@ controller.updateProduct = async (req, res, next) => {
                 <td>${body.product_category.name}</td>
                 <td>${body.product_mrp}</td>
                 <td>${body.product_price}</td>
+                <td>${body.purchase_price}</td>
                 <td>${body.product_stock}</td>
                 <td>${body.product_unit}</td>
                 <td><button class="btn btn-info px-2 py-1" onclick="getId('${data._id}')"> <i class="fa fa-edit"></i> </button><button class="btn btn-danger px-2 py-1" onclick="deleteData('${data._id}')"> <i class="fa fa-trash"></i> </button></td>`;
@@ -758,12 +817,12 @@ controller.offlineOrder = (req, res, next) => {
 
 
 // Offline Order
-controller.getOfflineOrder = (req, res)=>{
+controller.getOfflineOrder = (req, res) => {
     const body = req.body;
     const cart = req.session.cart;
 
     let total = 0;
-    for(let i=0; i<cart.length; i++){
+    for (let i = 0; i < cart.length; i++) {
         total += cart[i].qty * cart[i].product_price
     }
     total = Math.round(total).toFixed(2);
@@ -775,10 +834,10 @@ controller.getOfflineOrder = (req, res)=>{
     offlineData.save((err, data) => {
         if (!err) {
             delete req.session.cart;
-            return res.send({status: true, value: "Order Done !!"});
+            return res.send({ status: true, value: "Order Done !!" });
         }
         else {
-            return res.send({status: false, value: err});
+            return res.send({ status: false, value: err });
         }
     });
 }
@@ -797,7 +856,7 @@ controller.manualOrder = (req, res) => {
                 qty: data.product_qty,
             }
         )
-    }else{
+    } else {
         req.session.cart.push(
             {
                 product_name: data.product_name,
@@ -814,15 +873,15 @@ controller.manualOrder = (req, res) => {
 controller.clearManualOrder = (req, res) => {
     if (typeof req.session.cart == "undefined") {
         return res.send({ status: true, value: 'Nothing to Clear !!', cart: req.session.cart });
-    }else{
+    } else {
         delete req.session.cart;
         return res.send({ status: true, value: 'All Items Removed!!', cart: req.session.cart });
     }
-    
+
 }
 
 // Update Cart
-controller.updateCart = (req, res)=>{
+controller.updateCart = (req, res) => {
     let cart = req.session.cart;
     let action = req.query.action;
     let index = req.params.index;
@@ -834,18 +893,18 @@ controller.updateCart = (req, res)=>{
 
 
 // Show Offline Orders
-controller.showOfflineOrder = (req, res)=>{
-    offlineOrderModel.find((err, data)=>{
-        if(!err){
-            for(let i=0; i<data.length; i++){
-                
+controller.showOfflineOrder = (req, res) => {
+    offlineOrderModel.find((err, data) => {
+        if (!err) {
+            for (let i = 0; i < data.length; i++) {
+
             }
 
             console.log(data);
 
-            return res.render('admin/offline-order/show-order', { layout: "backend", list: data});
-        }else{
-            return res.render('admin/offline-order/show-order', { layout: "backend", list: []});
+            return res.render('admin/offline-order/show-order', { layout: "backend", list: data });
+        } else {
+            return res.render('admin/offline-order/show-order', { layout: "backend", list: [] });
         }
     }).lean()
 }

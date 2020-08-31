@@ -447,9 +447,9 @@ controller.updateCart = (req, res, next) => {
 
 controller.order = async (req, res, next) => {
     try {
-        const data = await orderModel.find({ user_id: req.session.passport.user }).lean().sort({order_date:-1});
+        const data = await orderModel.find({ user_id: req.session.passport.user }).lean().sort({_id:-1});
 
-        console.log(data);
+        // console.log(data);
         for (let i = 0; i < data.length; i++) {
             let shippedDate = data[i].shipped_date == null ? "Not Delevered Yet" : data[i].shipped_date.toDateString();
             data[i].order_date = data[i].order_date.toDateString();

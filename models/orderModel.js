@@ -8,7 +8,7 @@ const orderSchema = new Schema({
     address: {type: Schema.Types.ObjectId, ref:"address", required: true},
     payment_id: {type: String},
     payment_mode: {type: String, required: true},
-    order_date: {type: Date, required: true, default: Date.now()},
+    order_date: {type: Date, required: true, default: new Date()},
     shipped_date: {type: Date, default: null},
     order_status: {type: Number, required: true, default: 0}
 });

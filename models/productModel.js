@@ -37,6 +37,9 @@ const productSchema = new Schema({
         type: Number, 
         required: true
     },
+    purchase_price:{
+        type: Number
+    },
     product_status: {
         type: Number, 
         required: true, 

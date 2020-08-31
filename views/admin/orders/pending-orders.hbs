@@ -40,12 +40,17 @@
                                                 aria-controls="collapseOne">
                                                 <i class="fa fa-angle-down"></i>
                                             </button>
+                                            
+                                            <a href="updateOrder/{{item._id}}" class="btn btn-info px-2 py-0 mr-2" title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+
                                             <button onclick="orderConfirmed('{{item._id}}')"  title="Confirmed"
                                                 class="btn btn-success px-2 py-0 mr-2"> <i class="fa fa-check"></i> </button>
 
                                             <button onclick="orderDelivered('{{item._id}}')" title="Delivered"
                                                 class="btn btn-primary px-2 py-0 mr-2"> <i class="fa fa-truck"></i> </button>
-
+                                            
                                             <button onclick="deleteData('{{item._id}}')" title="Delete"
                                                 class="btn btn-danger px-2 py-0"> <i class="fa fa-trash"></i> </button>
                                         </div>
@@ -235,6 +240,7 @@
 </div>
 
 <script>
+
     //delete
     function deleteData(id) {
         $("#deleteModal").modal("show");

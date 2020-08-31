@@ -71,11 +71,12 @@ router.get("/updateCart/:index", adminController.updateCart);
 router.post("/getOfflineOrder", adminController.getOfflineOrder);
 router.get("/showOfflineOrder", adminController.showOfflineOrder);
 
-
+// Update Order
+router.get("/updateOrder/:orderId", adminController.updateOrder);
+router.get("/getUpdateOrder/:orderId", adminController.getUpdateOrder);
 
 // Delete Order
 router.delete("/orderDelete", adminController.orderDelete);
-
 
 router.get("/test", (req, res)=>{
     console.log("delete")
@@ -84,5 +85,3 @@ router.get("/test", (req, res)=>{
 
 // export modules
 module.exports = router;
-
-

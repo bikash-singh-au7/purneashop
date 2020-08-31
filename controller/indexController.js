@@ -18,6 +18,7 @@ controller.index = async (req, res, next) => {
     // return res.render("maintenance");
 
     // Getting Product
+    // const p_id = mongoose.Types.ObjectId('5f0b52f0fd223e001c0acb7c');
     const productData = await productModel.find({ product_status: 1}).limit(5).lean();
 
     // Add Discount Properties
